@@ -1,0 +1,50 @@
+@font-face {
+    font-family: 'IndieFlower';
+    src: url('IndieFlower-Regular.ttf') format('truetype');
+}
+
+body, button {
+    font-family: 'IndieFlower';
+}
+
+/* -------------------------- */
+/*          Index Page        */
+/* -------------------------- */
+#info-button-text {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    background: transparent;
+    font-size: 20px;
+}
+
+#map_table tr:nth-child(odd) {
+    background-color: lightgrey;
+}
+
+/* -------------------------- */
+/*       Swarm Info Page      */
+/* -------------------------- */
+#agent_table,
+#telemetry_table,
+#mission_table,
+#system_table {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+}
+
+#info-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+}
+
+#agent, #telemetry, #mission, #system {
+    grid-column: 1;
+    text-align: center;
+    max-height: 40vh;
+    overflow: auto;
+}
