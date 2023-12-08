@@ -104,13 +104,13 @@ def update_system_table(n):
     return data
 
 # Map component callbacks
-@app.callback(
-    Output('map_table', 'data'),
-    Input('interval-component', 'n_intervals')
-)
-def update_map_fig(n):
-    data, _ = map_component.read_data()
-    return data
+# @app.callback(
+#     Output('map', 'figure'),
+#     Input('interval-component', 'n_intervals')
+# )
+# def update_map_fig(n):
+#     data, _ = map_component.read_data()
+#     return data
 
 
 # Update the page content based on the URL
