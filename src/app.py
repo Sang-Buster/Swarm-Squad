@@ -16,11 +16,6 @@ app.title = 'Swarm Squad'
 
 # Define the layout of the app
 app.layout = html.Div([
-    dcc.Interval(
-        id='interval-component',
-        interval=500, # in milliseconds
-        n_intervals=0
-    ),
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content', children=[
         map_component.layout,  
