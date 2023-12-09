@@ -147,6 +147,16 @@ def update_figure(n):
     # Return a dictionary that represents a plotly figure
     return {
         'data': data,
+        'layout': {
+            'mapbox': {
+                'style': 'mapbox://styles/mapbox/streets-v12',
+                'center': {'lat': 29.1901,  'lon': -81.049,},
+                'zoom': 15.4,
+                'pitch': 45,
+            },
+            'autosize': True,
+            'height': 800,
+        }
     }
 
 
