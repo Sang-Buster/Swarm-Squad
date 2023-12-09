@@ -7,7 +7,7 @@ def read_data():
     conn = sqlite3.connect('./src/data/swarmsquad.db')
 
     # Read the data from the database into a DataFrame
-    df = pd.read_sql_query("SELECT * from agent", conn)
+    df = pd.read_sql_query("SELECT * from system", conn)
 
     # Close the connection to the database
     conn.close()

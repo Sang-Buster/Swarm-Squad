@@ -231,15 +231,16 @@ The dashboard has 4 tables on the corner of the screen, and in the center of the
 ```text
 📦SwarmSquad
  ┣ 📂doc										// Documentation Website
- ┣ 📂src
+ ┣ 📂lib
+ ┣ src									   	    // Source Website
  ┃ ┣ 📂assets
+ ┃ ┃ ┣ 📄favicon.ico
+ ┃ ┃ ┣ 📄IndieFlower-Regular.ttf
+ ┃ ┃ ┣ 📄style.css
+ ┃ ┃ ┣ 📄SwarmSquad-B.ico
+ ┃ ┃ ┣ 📄SwarmSquad-B.svg
+ ┃ ┃ ┗ 📄SwarmSquad-W.svg
  ┃ ┣ 📂components
- ┃ ┃ ┃ ┣ 📄agent_component.cpython-311.pyc
- ┃ ┃ ┃ ┣ 📄map_component.cpython-311.pyc
- ┃ ┃ ┃ ┣ 📄mission_component.cpython-311.pyc
- ┃ ┃ ┃ ┣ 📄system_component.cpython-311.pyc
- ┃ ┃ ┃ ┣ 📄telemetry_component.cpython-311.pyc
- ┃ ┃ ┃ ┗ 📄__init__.cpython-311.pyc
  ┃ ┃ ┣ 📄agent_component.py
  ┃ ┃ ┣ 📄map_component.py
  ┃ ┃ ┣ 📄mission_component.py
@@ -247,11 +248,14 @@ The dashboard has 4 tables on the corner of the screen, and in the center of the
  ┃ ┃ ┣ 📄telemetry_component.py
  ┃ ┃ ┗ 📄__init__.py
  ┃ ┣ 📂data
- ┃ ┃ ┣ 📄generate_fake_data.py
- ┃ ┃ ┗ 📄swarmsquad.db
+ ┃ ┃ ┣ 📄agent_fake_data.py
+ ┃ ┃ ┣ 📄mission_fake_data.py
+ ┃ ┃ ┣ 📄system_fake_data.py
+ ┃ ┃ ┗ 📄telemetry_fake_data.py
  ┃ ┣ 📄app.py
  ┃ ┗ 📄__init__.py
  ┣ 📂web										// Showcase Website
+ ┣ 📄.gitattributes
  ┣ 📄.gitignore
  ┣ 📄README.md
  ┗ 📄requirements.txt
