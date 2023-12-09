@@ -151,11 +151,11 @@ def update_figure(n):
             'mapbox': {
                 'style': 'mapbox://styles/mapbox/streets-v12',
                 'center': {'lat': 29.1901,  'lon': -81.049,},
-                'zoom': 15.4,
+                'zoom': 15.5,
                 'pitch': 45,
             },
             'autosize': True,
-            'height': 800,
+            'height': 790,
         }
     }
 
