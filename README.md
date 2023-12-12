@@ -90,9 +90,9 @@
 
 ```text
 📦Swarm Squad
- ┣ 📂doc										// Documentation Website
+ ┣ 📂doc									  // Documentation Website
  ┣ 📂lib
- ┣ src									   	    // Source Website
+ ┣ src									  // Source Website
  ┃ ┣ 📂assets
  ┃ ┃ ┣ 📄favicon.ico
  ┃ ┃ ┣ 📄IndieFlower-Regular.ttf
@@ -117,7 +117,7 @@
  ┃ ┣ 📄app.py
  ┃ ┣ 📄setup.py
  ┃ ┗ 📄__init__.py
- ┣ 📂web										// Showcase Website
+ ┣ 📂web									  // Showcase Website
  ┣ 📄.gitattributes
  ┣ 📄.gitignore
  ┣ 📄README.md
