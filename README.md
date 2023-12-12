@@ -1,9 +1,16 @@
 <div align="center">
-   <img src="/src/assets/SwarmSquad-W.svg" width=20% alt="logo">
+   <a href="https://github.com/Sang-Buster/Swarm-Squad">
+      <img src="/src/assets/SwarmSquad-W.svg" width=20% alt="logo">
+   </a>   
    <h1>Swarm Squad</h1>
    <h5>A simulation framework for multi-agent systems.</h5>
+   <a href="https://swarm-squad.vercel.app/">
+   <img src="https://img.shields.io/badge/Demo-282c34?style=for-the-badge&logoColor=white" />
+   </a> &nbsp;&nbsp;
+   <a href="https://swarm-squad-doc.vercel.app/">
+   <img src="https://img.shields.io/badge/Doc-282c34?style=for-the-badge&logoColor=white" />
+   </a>
 </div>
-
 ---
 
 ## ✨ Key Features
