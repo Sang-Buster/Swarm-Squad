@@ -1,8 +1,6 @@
 <h1 align="center">Swarm Squad</h1>
 <h5 align="center">A simulation framework for multi-agent systems.</h5>
 
-> Swarm Squad is a simulation framework designed for evaluating and testing multi-agent systems. It provides a structured environment for simulating and assessing the behavior and performance of multiple agents working together in a swarm.
-
 ---
 
 ## ✨ Key Features
