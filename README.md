@@ -1,5 +1,8 @@
-<h1 align="center">Swarm Squad</h1>
-<h5 align="center">A simulation framework for multi-agent systems.</h5>
+<div align="center">
+   <img src="/src/assets/SwarmSquad-W.svg" width=20% alt="logo">
+   <h1>Swarm Squad</h1>
+   <h5>A simulation framework for multi-agent systems.</h5>
+</div>
 
 ---
 
