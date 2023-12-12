@@ -90,34 +90,16 @@
 
 ```text
 📦Swarm Squad
- ┣ 📂doc									  // Documentation Website
+ ┣ 📂doc                         // Documentation Website
  ┣ 📂lib
- ┣ src									  // Source Website
+ ┣ 📂src                         // Source Website
  ┃ ┣ 📂assets
- ┃ ┃ ┣ 📄favicon.ico
- ┃ ┃ ┣ 📄IndieFlower-Regular.ttf
- ┃ ┃ ┣ 📄style.css
- ┃ ┃ ┣ 📄swarm_squad-B.ico
- ┃ ┃ ┣ 📄swarm_squad-B.svg
- ┃ ┃ ┗ 📄swarm_squad-W.svg
  ┃ ┣ 📂components
- ┃ ┃ ┣ 📄agent_component.py
- ┃ ┃ ┣ 📄map_component.py
- ┃ ┃ ┣ 📄mission_component.py
- ┃ ┃ ┣ 📄system_component.py
- ┃ ┃ ┣ 📄telemetry_component.py
- ┃ ┃ ┗ 📄__init__.py
  ┃ ┣ 📂data
- ┃ ┃ ┣ 📄agent_fake_data.py
- ┃ ┃ ┣ 📄buildings.geojson
- ┃ ┃ ┣ 📄mission_fake_data.py
- ┃ ┃ ┣ 📄swarm_squad.db
- ┃ ┃ ┣ 📄system_fake_data.py
- ┃ ┃ ┗ 📄telemetry_fake_data.py
  ┃ ┣ 📄app.py
  ┃ ┣ 📄setup.py
  ┃ ┗ 📄__init__.py
- ┣ 📂web									  // Showcase Website
+ ┣ 📂web                         // Showcase Website
  ┣ 📄.gitattributes
  ┣ 📄.gitignore
  ┣ 📄README.md
