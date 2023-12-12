@@ -93,7 +93,6 @@
 
 ```text
 📦Swarm Squad
- ┣ 📂doc                         // Documentation Website
  ┣ 📂lib
  ┣ 📂src                         // Source Website
  ┃ ┣ 📂assets
@@ -102,7 +101,6 @@
  ┃ ┣ 📄app.py
  ┃ ┣ 📄setup.py
  ┃ ┗ 📄__init__.py
- ┣ 📂web                         // Showcase Website
  ┣ 📄.gitattributes
  ┣ 📄.gitignore
  ┣ 📄README.md
