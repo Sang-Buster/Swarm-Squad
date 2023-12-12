@@ -231,8 +231,7 @@ The dashboard has 4 tables on the corner of the screen, and in the center of the
 ```text
 📦SwarmSquad
  ┣ 📂doc										// Documentation Website
- ┣ 📂lib
- ┣ src									   	    // Source Website
+ ┣ src									   	    // Source Code
  ┃ ┣ 📂assets
  ┃ ┃ ┣ 📄favicon.ico
  ┃ ┃ ┣ 📄IndieFlower-Regular.ttf
@@ -249,7 +248,9 @@ The dashboard has 4 tables on the corner of the screen, and in the center of the
  ┃ ┃ ┗ 📄__init__.py
  ┃ ┣ 📂data
  ┃ ┃ ┣ 📄agent_fake_data.py
+ ┃ ┃ ┣ 📄buildings.geojson
  ┃ ┃ ┣ 📄mission_fake_data.py
+ ┃ ┃ ┣ 📄swarm_squad.db
  ┃ ┃ ┣ 📄system_fake_data.py
  ┃ ┃ ┗ 📄telemetry_fake_data.py
  ┃ ┣ 📄app.py
