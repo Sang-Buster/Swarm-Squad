@@ -1,10 +1,10 @@
 import dash
 from dash import dcc, html
-from dash.dependencies import Input, Output
-from components import agent_component, telemetry_component, mission_component, system_component, map_component
+from dash.dependencies import Input, Output, State
 import pandas as pd
 import sqlite3
 
+from components import agent_component, telemetry_component, mission_component, system_component, map_component
 
 
 mapbox_scripts = ['https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js']
@@ -14,24 +14,10 @@ app.title = 'Swarm Squad'
 
 
 
-# Define the layout of the app
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content', children=[
-        map_component.layout,  
-        agent_component.layout,  
-        telemetry_component.layout, 
-        mission_component.layout, 
-        system_component.layout, 
-    ]),
-])
-
-
-
 # Index page
 index_page = html.Div(id='index-page', children=[
     html.Center(id='title', children=[
-        html.Img(src='/assets/SwarmSquad-B.svg', style={'height':'100px', 'width':'100px'}),
+        html.Img(src='/assets/swarm_squad-B.svg', style={'height':'100px', 'width':'100px'}),
         html.H1('Swarm Squad', style={'margin-top':'-10px'})
     ]),
     html.Center(id='map', children=[map_component.layout]),
@@ -62,6 +48,16 @@ info_layout = html.Div(id='info-layout', children=[
         interval=500,
         n_intervals=0
     )
+])
+
+
+
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content', children=[
+        index_page,
+        info_layout,
+    ]),
 ])
 
 
@@ -112,7 +108,7 @@ def update_system_table(n):
 
 # Function to get agent data from the database
 def get_agent_data():
-    conn = sqlite3.connect('./src/data/swarmsquad.db')
+    conn = sqlite3.connect('./src/data/swarm_squad.db')
     agent_df = pd.read_sql('SELECT * FROM agent', conn)
     conn.close()
     return agent_df
@@ -120,9 +116,10 @@ def get_agent_data():
 # Map component callbacks
 @app.callback(
     Output('map', 'figure'),
-    Input('interval-component', 'n_intervals')
+    Input('interval-component', 'n_intervals'),
+    State('map', 'figure')
 )
-def update_figure(n):
+def update_figure(n, current_figure):
     # Get the agent data
     agent_df = get_agent_data()
 
@@ -135,25 +132,15 @@ def update_figure(n):
             'type': 'scattermapbox',
             'lat': [lat],
             'lon': [lon],
-            'marker': {'size': 20},
+            'marker': {'size': 20, 'symbol': ["airport"]},
             'name': row['Agent Name'],
         })
 
-    # Return a dictionary that represents a plotly figure
-    return {
-        'data': data,
-        'layout': {
-            'mapbox': {
-                'style': 'mapbox://styles/mapbox/streets-v12',
-                'center': {'lat': 29.1901,  'lon': -81.049,},
-                'zoom': 15.5,
-                'pitch': 45,
-            },
-            'autosize': True,
-            'height': 790,
-        }
-    }
+    # Update the data of the current figure
+    current_figure['data'] = data
 
+    # Return the updated figure
+    return current_figure
 
 # Update the page content based on the URL
 @app.callback(Output('page-content', 'children'),

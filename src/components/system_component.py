@@ -4,7 +4,7 @@ import sqlite3
 
 def read_data():
     # Create a connection to the SQLite database
-    conn = sqlite3.connect('./src/data/swarmsquad.db')
+    conn = sqlite3.connect('./src/data/swarm_squad.db')
 
     # Read the data from the database into a DataFrame
     df = pd.read_sql_query("SELECT * from system", conn)

@@ -24,7 +24,7 @@ while True:
 
     # Create a connection to the SQLite database
     # If the database does not exist, it will be created
-    conn = sqlite3.connect('./src/data/swarmsquad.db')
+    conn = sqlite3.connect('./src/data/swarm_squad.db')
 
     # Write the data to a table in the database
     system_health_df.to_sql('system', conn, if_exists='replace', index=False)
@@ -34,5 +34,5 @@ while True:
 
     print("Updated the database")
 
-    # Pause for 1 second before the next update
+    # Pause for half second before the next update
     time.sleep(0.5)
