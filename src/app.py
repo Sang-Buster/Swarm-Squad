@@ -29,7 +29,7 @@ index_page = html.Div(id='index-page', children=[
         )
     ]),
     dcc.Interval(
-        id='interval-component',
+        id='index_interval-component',
         interval=500,
         n_intervals=0
     )
@@ -44,7 +44,7 @@ info_layout = html.Div(id='info-layout', children=[
     html.Div(id='mission', children=[html.H3('Mission Detail'), mission_component.layout]),
     html.Div(id='system', children=[html.H3('System Health'), system_component.layout]),
     dcc.Interval(
-        id='interval-component',
+        id='info_interval-component',
         interval=500,
         n_intervals=0
     )
@@ -65,7 +65,7 @@ app.layout = html.Div([
 # Agent component callbacks
 @app.callback(
     Output('agent_table', 'data'),
-    Input('interval-component', 'n_intervals')
+    Input('info_interval-component', 'n_intervals')
 )
 def update_agent_table(n):
     data, _ = agent_component.read_data()
@@ -76,7 +76,7 @@ def update_agent_table(n):
 # Telemetry component callbacks
 @app.callback(
     Output('telemetry_table', 'data'),
-    Input('interval-component', 'n_intervals')
+    Input('info_interval-component', 'n_intervals')
 )
 def update_telemetry_table(n):
     data, _ = telemetry_component.read_data()
@@ -87,7 +87,7 @@ def update_telemetry_table(n):
 # Mission component callbacks
 @app.callback(
     Output('mission_table', 'data'),
-    Input('interval-component', 'n_intervals')
+    Input('info_interval-component', 'n_intervals')
 )
 def update_mission_table(n):
     data, _ = mission_component.read_data()
@@ -98,7 +98,7 @@ def update_mission_table(n):
 # System component callbacks
 @app.callback(
     Output('system_table', 'data'),
-    Input('interval-component', 'n_intervals')
+    Input('info_interval-component', 'n_intervals')
 )
 def update_system_table(n):
     data, _ = system_component.read_data()
@@ -116,10 +116,14 @@ def get_agent_data():
 # Map component callbacks
 @app.callback(
     Output('map', 'figure'),
-    Input('interval-component', 'n_intervals'),
+    Input('index_interval-component', 'n_intervals'),
     State('map', 'figure')
 )
 def update_figure(n, current_figure):
+    # If current_figure is None, initialize it to an empty dictionary
+    if current_figure is None:
+        current_figure = {}
+
     # Get the agent data
     agent_df = get_agent_data()
 
@@ -141,6 +145,8 @@ def update_figure(n, current_figure):
 
     # Return the updated figure
     return current_figure
+
+
 
 # Update the page content based on the URL
 @app.callback(Output('page-content', 'children'),
