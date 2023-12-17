@@ -7,8 +7,8 @@ import sqlite3
 from components import agent_component, telemetry_component, mission_component, system_component, map_component
 
 
-mapbox_scripts = ['https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js']
-mapbox_stylesheets = ['https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css']
+mapbox_scripts = ['https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js']
+mapbox_stylesheets = ['https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css']
 app = dash.Dash(__name__, external_stylesheets=mapbox_stylesheets, external_scripts=mapbox_scripts)
 app.title = 'Swarm Squad'
 
@@ -20,7 +20,7 @@ index_page = html.Div(id='index-page', children=[
         html.Img(src='/assets/swarm_squad-B.svg', style={'height':'100px', 'width':'100px'}),
         html.H1('Swarm Squad', style={'margin-top':'-10px'})
     ]),
-    html.Center(id='map', children=[map_component.layout]),
+    html.Center(id='map-container', children=[map_component.layout]),
     html.Center(id='info-button', children=[
         html.A(
             html.Button('Swarm Info', id='info-button-text'),
@@ -136,7 +136,7 @@ def update_figure(n, current_figure):
             'type': 'scattermapbox',
             'lat': [lat],
             'lon': [lon],
-            'marker': {'size': 20, 'symbol': ["airport"]},
+            'marker': {'size': 20},
             'name': row['Agent Name'],
         })
 
