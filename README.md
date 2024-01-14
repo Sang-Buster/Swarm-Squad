@@ -1,6 +1,6 @@
 <div align="center">
    <a href="https://github.com/Sang-Buster/Swarm-Squad">
-      <img src="https://raw.githubusercontent.com/Sang-Buster/Swarm-Squad/main/src/assets/swarm_squad-W.svg?token=GHSAT0AAAAAACG6OXSSHUTHSE4CXE73PY3AZL4WPYA" width=20% alt="logo">
+      <img src="https://github.com/Sang-Buster/Swarm-Squad/raw/main/src/assets/swarm_squad-W.svg" width=20% alt="logo">
    </a>   
    <h1>Swarm Squad</h1>
    <h5>A simulation framework for multi-agent systems.</h5>
