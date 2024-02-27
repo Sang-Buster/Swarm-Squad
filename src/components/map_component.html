@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Swarm Map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.2/dist/threebox.min.js"
+        type="text/javascript"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.2/dist/threebox.css" rel="stylesheet" />
+    <div id="map"></div>
+    <script>
+        mapboxgl.accessToken = '';
+
+        var origin = [-81.049, 29.189, 50];
+
+        // Initialize a map
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/standard',
+            center: origin,
+            pitch: 70,
+            bearing: 0,
+            zoom: 16.5,
+            antialias: true
+        });
+
+        // Add full screen controls to the map.
+        map.addControl(new mapboxgl.FullscreenControl());
+        // Add zoom and rotation controls to the map.
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Add a drone to the map.
+        map.on('style.load', function () {
+            map.addSource('mapbox-dem', {
+                'type': 'raster-dem',
+                'url': 'mapbox://mapbox.terrain-rgb'
+            });
+
+            map.setTerrain({
+                'source': 'mapbox-dem',
+                'exaggeration': 1.5
+            });
+
+            map.addLayer({
+                id: 'custom_layer',
+                type: 'custom',
+                renderingMode: '3d',
+                onAdd: function (map, mbxContext) {
+
+                    window.tb = new Threebox(
+                        map,
+                        mbxContext,
+                        {
+                            defaultLights: true,
+                            enableSelectingFeatures: true,
+                            enableSelectingObjects: true,
+                            enableDraggingObjects: true,
+                            enableRotatingObjects: true,
+                            enableTooltips: true
+                        }
+                    );
+
+                    fetch('http://localhost:8050/drone')
+                        .then(response => response.json())
+                        .then(data => {
+                            let drones = [];
+                            let droneCoords = data.droneCoords; // Get the initial coordinates from the server
+                            let droneNames = data.droneNames; // Get the drone names from the server
+
+                            for (let i = 0; i < droneCoords.length; i++) {
+                                var options = {
+                                    obj: '../assets/drone.glb',
+                                    type: 'gltf',
+                                    scale: 1,
+                                    units: 'meters',
+                                    rotation: { x: 90, y: -90, z: 0 },
+                                }
+
+                                tb.loadObj(options, function (model) {
+                                    let coords = droneCoords[i][0].split(',').map(Number); // Split the string into an array of numbers
+                                    let drone = model.setCoords(coords);
+                                    drone.name = droneNames[i]; // Set the name of the drone
+
+                                    // Add a tooltip to the drone
+                                    drone.addTooltip('Drone ' + droneNames[i] + ': (' + coords.join(', ') + ')', true);
+
+                                    // Start the animations
+                                    if (model.children[0].animations && model.children[0].animations.length > 0) {
+                                        drone.mixer = new THREE.AnimationMixer(model.children[0]);
+                                        drone.action = drone.mixer.clipAction(model.children[0].animations[0]);
+                                        drone.action.play();
+                                    }
+
+                                    tb.add(drone);
+                                    drones.push(drone);
+                                });
+                            }
+
+                            // Add a clock for the animations
+                            var clock = new THREE.Clock();
+
+                            // Update drone positions every 100 mili-second
+                            setInterval(function () {
+                                fetch('http://localhost:8050/drone')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let newCoords = data.droneCoords; // Get the new coordinates from the server
+                                        for (let i = 0; i < drones.length; i++) {
+                                            let coords = newCoords[i][0].split(',').map(Number); // Split the string into an array of numbers
+                                            drones[i].setCoords(coords);
+
+                                            // Update the animation.
+                                            if (drones[i].mixer) {
+                                                drones[i].mixer.update(clock.getDelta());
+                                            }
+                                        }
+                                    });
+                            }, 100);
+                        });
+                }, render: function (gl, matrix) {
+                    tb.update();
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

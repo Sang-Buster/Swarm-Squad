@@ -9,7 +9,7 @@ telemetry_columns = ['Agent Name', 'Location', 'Destination Coordinates', 'Altit
 while True:
     # Generate fake data for each column
     agent_name = range(1, 11)
-    location = [f"{random.uniform(29.187, 29.1940):.4f}, {random.uniform(81.044, 81.052):.3f}" for _ in range(10)]
+    location = [f"{random.uniform(-81.044, -81.052):.3f}, {random.uniform(29.187, 29.1940):.4f}, 50" for _ in range(10)]
     destination_coordinates = [f"{random.uniform(29.187, 29.1940):.4f}, {random.uniform(81.044, 81.052):.3f}" for _ in range(10)]
     altitude = [random.uniform(100, 1000) for _ in range(10)]  # Altitude in meters
     airspeed_velocity = [random.uniform(50, 200) for _ in range(10)]  # Airspeed/Velocity in km/h

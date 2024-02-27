@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Swarm Map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.2/dist/threebox.min.js"
+        type="text/javascript"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.2/dist/threebox.css" rel="stylesheet" />
+    <div id="map"></div>
+    <script>
+        mapboxgl.accessToken = '';
+
+        var origin = [-81.049, 29.189, 50];
+
+        // Initialize a map
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/standard',
+            center: origin,
+            pitch: 70,
+            bearing: 0,
+            zoom: 16.5,
+            antialias: true
+        });
+
+        // Add full screen controls to the map.
+        map.addControl(new mapboxgl.FullscreenControl());
+        // Add zoom and rotation controls to the map.
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Define the drone names manually, copied from http://127.0.0.1:8050/drone
+        var droneNames = ['drone1', 'drone2', 'drone3']; 
+
+        // Define the drone trajectories manually copied from http://127.0.0.1:8050/drone (longitude, latitude, altitude)
+        let droneTrajectories = [
+            // Iteration 1
+            [
+                ["-81.046, 29.1888, 50"],
+                ["-81.044, 29.1875, 50"],
+                ["-81.048, 29.1903, 50"],
+                ["-81.050, 29.1877, 50"]
+            ],
+            // Iteration 2
+            [
+                ["-81.044, 29.1931, 50"],
+                ["-81.049, 29.1892, 50"],
+                ["-81.050, 29.1908, 50"],
+                ["-81.048, 29.1896, 50"]
+            ],
+            // Iteration 3
+            [
+                ["-81.048, 29.1884, 50"],
+                ["-81.047, 29.1919, 50"],
+                ["-81.051, 29.1875, 50"],
+                ["-81.044, 29.1928, 50"]
+            ]
+        ];
+
+        let dronePaths = droneTrajectories[0].map((_, i) =>
+            droneTrajectories.map(row => row[i][0].split(',').map(Number))
+        );
+        console.log(dronePaths);
+
+        // Initialize the drone's path index
+        var dronePathIndices = new Array(dronePaths.length).fill(0);
+
+        // Add a drone to the map.
+        map.on('style.load', function () {
+            map.addLayer({
+                id: 'custom_layer',
+                type: 'custom',
+                renderingMode: '3d',
+                onAdd: function (map, mbxContext) {
+
+                    window.tb = new Threebox(
+                        map,
+                        mbxContext,
+                        {
+                            defaultLights: true,
+                            enableSelectingFeatures: true,
+                            enableSelectingObjects: true,
+                            enableDraggingObjects: true,
+                            enableRotatingObjects: true,
+                            enableTooltips: true
+                        }
+                    );
+
+                    for (let i = 0; i < droneNames.length; i++) {
+                        var options = {
+                            obj: '../assets/drone.glb',
+                            type: 'gltf',
+                            scale: 1,
+                            units: 'meters',
+                            rotation: { x: 90, y: -90, z: 0 },
+                        }
+
+                        tb.loadObj(options, function (model) {
+                            drone = model.setCoords(dronePaths[i][0]);
+                            drone.name = droneNames[i]; // Set the name of the drone
+                            drone.coords = dronePaths[i][0]; // Store the coordinates
+
+                            // Add a tooltip to the drone
+                            drone.addTooltip(droneNames[i], true);
+
+                            tb.add(drone);
+
+                            // Start the animation.
+                            if (model.animations && model.animations.length > 0) {
+                                drone.mixer = new THREE.AnimationMixer(drone);
+                                drone.action = drone.mixer.clipAction(model.animations[0]);
+                                drone.action.play();
+                            }
+                        });
+                    }
+                },
+                render: function (gl, matrix) {
+                    for (let i = 0; i < dronePaths.length; i++) {
+                        var drone = tb.world.children.find(child => child.name === droneNames[i]);
+                        if (drone) {
+                            var nextIndex = (dronePathIndices[i] + 1) % dronePaths[i].length;
+                            var currentCoords = drone.coords; // Use the stored coordinates
+                            var nextCoords = dronePaths[i][nextIndex];
+
+                            // Calculate the new coordinates
+                            var newCoords = [
+                                currentCoords[0] + (nextCoords[0] - currentCoords[0]) * 0.001,
+                                currentCoords[1] + (nextCoords[1] - currentCoords[1]) * 0.001,
+                                currentCoords[2] + (nextCoords[2] - currentCoords[2]) * 0.001
+                            ];
+
+                            // Update the drone's coordinates
+                            drone.setCoords(newCoords);
+                            drone.coords = newCoords; // Store the new coordinates
+
+                            // If the drone has reached the next point, move to the next point
+                            if (Math.abs(newCoords[0] - nextCoords[0]) < 0.001 &&
+                                Math.abs(newCoords[1] - nextCoords[1]) < 0.001 &&
+                                Math.abs(newCoords[2] - nextCoords[2]) < 0.001) {
+                                dronePathIndices[i] = nextIndex;
+                            }
+
+                            // Update the animation.
+                            if (drone.mixer) {
+                                drone.mixer.update(0.01); // Update the animation.
+                            }
+                        }
+                    }
+                    tb.update();
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

@@ -1,41 +1,49 @@
 import dash
 from dash import dcc, html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
+import os
 import pandas as pd
 import sqlite3
+from flask import jsonify
+from flask_cors import CORS
+from components import agent_component, telemetry_component, mission_component, system_component
+with open(os.path.join(os.path.dirname(__file__), 'components', 'map_component.html'), 'r') as f:map_html_content = f.read()
 
-from components import agent_component, telemetry_component, mission_component, system_component, map_component
-
-
-mapbox_scripts = ['https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js']
-mapbox_stylesheets = ['https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css']
-app = dash.Dash(__name__, external_stylesheets=mapbox_stylesheets, external_scripts=mapbox_scripts)
+app = dash.Dash(__name__)
+CORS(app.server)
 app.title = 'Swarm Squad'
-
+server = app.server
 
 
 # Index page
 index_page = html.Div(id='index-page', children=[
     html.Center(id='title', children=[
         html.Img(src='/assets/swarm_squad-B.svg', style={'height':'100px', 'width':'100px'}),
-        html.H1('Swarm Squad', style={'margin-top':'-10px'})
+        html.H1('Swarm Squad', style={'marginTop':'-10px'})
     ]),
-    html.Center(id='map-container', children=[map_component.layout]),
-    html.Center(id='info-button', children=[
+    html.Center(id='map-container', children=[
+        html.Div([
+            html.Iframe(srcDoc=map_html_content, style={"height": "780px", "width": "100%"})
+        ], style={'width': '100%', 'margin': "0 auto"})
+    ]),
+    html.Center(id='info-buttons', children=[
         html.A(
-            html.Button('Swarm Info', id='info-button-text'),
+            html.Button('Swarm Info', id='info_page-button'),
             href='/info',
             target='_blank'
+        ),
+        html.A(
+            html.Button('Position Info', id='drone_page-button'),
+            href='/drone',
+            target='_blank'
         )
-    ]),
+    ], style={'display': 'flex', 'justifyContent': 'center', 'gap': '10px'}),
     dcc.Interval(
         id='index_interval-component',
         interval=500,
         n_intervals=0
     )
 ])
-
-
 
 # Swarm info page
 info_layout = html.Div(id='info-layout', children=[
@@ -50,8 +58,7 @@ info_layout = html.Div(id='info-layout', children=[
     )
 ])
 
-
-
+# App layout
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content', children=[
@@ -106,46 +113,20 @@ def update_system_table(n):
 
 
 
-# Function to get agent data from the database
-def get_agent_data():
+# Map component callbacks 
+droneTrajectories = [] # Initialize droneTrajectories as an empty list
+
+@server.route('/drone')
+def get_drones():
     conn = sqlite3.connect('./src/data/swarm_squad.db')
-    agent_df = pd.read_sql('SELECT * FROM agent', conn)
+    agent_df = pd.read_sql('SELECT * FROM telemetry', conn)
     conn.close()
-    return agent_df
 
-# Map component callbacks
-@app.callback(
-    Output('map', 'figure'),
-    Input('index_interval-component', 'n_intervals'),
-    State('map', 'figure')
-)
-def update_figure(n, current_figure):
-    # If current_figure is None, initialize it to an empty dictionary
-    if current_figure is None:
-        current_figure = {}
+    droneNames = agent_df['Agent Name'].unique().tolist()
+    droneCoords = agent_df.groupby('Agent Name')['Location'].apply(list).tolist()
+    droneTrajectories.append(droneCoords)
 
-    # Get the agent data
-    agent_df = get_agent_data()
-
-    # Create a marker for each agent
-    data = []
-    for _, row in agent_df.iterrows():
-        location_parts = row['Location'].split(',')
-        lat, lon = map(float, location_parts[:2])
-        data.append({
-            'type': 'scattermapbox',
-            'lat': [lat],
-            'lon': [lon],
-            'marker': {'size': 20},
-            'name': row['Agent Name'],
-        })
-
-    # Update the data of the current figure
-    current_figure['data'] = data
-
-    # Return the updated figure
-    return current_figure
-
+    return jsonify({'droneNames': droneNames, 'droneCoords': droneCoords, 'droneTrajectories': droneTrajectories})
 
 
 # Update the page content based on the URL

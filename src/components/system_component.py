@@ -1,4 +1,4 @@
-from dash import dcc, html, dash_table
+from dash import html, dash_table
 import pandas as pd
 import sqlite3
 

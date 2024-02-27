@@ -10,7 +10,7 @@ body, button {
 /* -------------------------- */
 /*          Index Page        */
 /* -------------------------- */
-#info-button-text {
+#drone_page-button, #info_page-button {
     margin: 10px;
     padding: 10px;
     border: 1px solid black;
@@ -18,7 +18,7 @@ body, button {
     font-size: 20px;
 }
 
-#info-button-text:hover {
+#drone_page-button:hover, #info_page-button:hover {
     background: lightgrey;
 }
 
