@@ -7,6 +7,7 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <link rel="icon" href="../assets/favicon.ico" type="image/x-icon">
     <style>
         body {
             margin: 0;
@@ -49,7 +50,7 @@
         map.addControl(new mapboxgl.NavigationControl());
 
         // Define the drone names manually, copied from http://127.0.0.1:8050/info
-        var droneNames = ['drone1', 'drone2', 'drone3']; 
+        var droneNames = ['drone1', 'drone2', 'drone3', 'drone4']; 
 
         // Define the drone trajectories manually copied from http://127.0.0.1:8050/info (longitude, latitude, altitude)
         let droneTrajectories = [

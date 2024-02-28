@@ -1,19 +1,29 @@
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
-import os
+from flask_cors import CORS
+
+# Imports for swarm table info page
+from components import agent_component, telemetry_component, mission_component, system_component
+
+# Imports for swarm position info page
 import pandas as pd
 import sqlite3
 from flask import jsonify
-from flask_cors import CORS
-from components import agent_component, telemetry_component, mission_component, system_component
-with open(os.path.join(os.path.dirname(__file__), 'components', 'map_component.html'), 'r') as f:map_html_content = f.read()
 
+# Imports for map component in index page
+import os
+def read_map_html():
+    with open(os.path.join(os.path.dirname(__file__), 'components', 'map_component.html'), 'r') as f:
+        return f.read()
+
+##################
+# Create the app #
+##################
 app = dash.Dash(__name__)
 CORS(app.server)
 app.title = 'Swarm Squad'
 server = app.server
-
 
 ##############
 # Index page #
@@ -25,9 +35,14 @@ index_page = html.Div(id='index-page', children=[
     ]),
     html.Center(id='map-container', children=[
         html.Div([
-            html.Iframe(srcDoc=map_html_content, style={"height": "780px", "width": "100%"})
-        ], style={'width': '100%', 'margin': "0 auto"})
-    ]),
+            html.Iframe(id='map', srcDoc=read_map_html(), style={"height": "780px", "width": "100%"})
+        ], style={'width': '100%', 'margin': "0 auto"}),
+        dcc.Interval(
+            id='map-refresh',
+            interval=5000,  # in milliseconds
+            n_intervals=0
+        )
+    ]),    
     html.Center(id='info-buttons', children=[
         html.A(
             html.Button('Swarm Table', id='table_page-button'),
@@ -75,6 +90,24 @@ app.layout = html.Div([
     ]),
 ])
 
+###########################
+# Map component callbacks #
+###########################
+# Get the initial modification time
+file_path = os.path.join(os.path.dirname(__file__), 'components', 'map_component.html')
+last_mod_time = os.path.getmtime(file_path)
+
+@app.callback(
+    Output('map', 'srcDoc'),
+    [Input('map-refresh', 'n_intervals')]
+)
+def refresh_map(n):
+    global last_mod_time
+    current_mod_time = os.path.getmtime(file_path)
+    if current_mod_time > last_mod_time:
+        last_mod_time = current_mod_time
+        return read_map_html()
+    return dash.no_update
 
 #############################
 # Agent component callbacks #
