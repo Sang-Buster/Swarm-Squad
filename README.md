@@ -101,7 +101,6 @@
 
 ```text
 📦Swarm Squad
- ┣ 📂lib
  ┣ 📂src                         // Source Website
  ┃ ┣ 📂assets
  ┃ ┣ 📂components
@@ -111,6 +110,5 @@
  ┃ ┗ 📄__init__.py
  ┣ 📄.gitattributes
  ┣ 📄.gitignore
- ┣ 📄README.md
- ┗ 📄requirements.txt
+ ┗ 📄README.md
 ```
