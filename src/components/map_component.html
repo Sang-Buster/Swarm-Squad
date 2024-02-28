@@ -79,7 +79,7 @@
                         }
                     );
 
-                    fetch('http://localhost:8050/drone')
+                    fetch('http://localhost:8050/info')
                         .then(response => response.json())
                         .then(data => {
                             let drones = [];
@@ -120,7 +120,7 @@
 
                             // Update drone positions every 100 mili-second
                             setInterval(function () {
-                                fetch('http://localhost:8050/drone')
+                                fetch('http://localhost:8050/info')
                                     .then(response => response.json())
                                     .then(data => {
                                         let newCoords = data.droneCoords; // Get the new coordinates from the server

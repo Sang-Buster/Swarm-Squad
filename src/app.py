@@ -15,7 +15,9 @@ app.title = 'Swarm Squad'
 server = app.server
 
 
-# Index page
+##############
+# Index page #
+##############
 index_page = html.Div(id='index-page', children=[
     html.Center(id='title', children=[
         html.Img(src='/assets/swarm_squad-B.svg', style={'height':'100px', 'width':'100px'}),
@@ -28,13 +30,13 @@ index_page = html.Div(id='index-page', children=[
     ]),
     html.Center(id='info-buttons', children=[
         html.A(
-            html.Button('Swarm Info', id='info_page-button'),
-            href='/info',
+            html.Button('Swarm Table', id='table_page-button'),
+            href='/table',
             target='_blank'
         ),
         html.A(
-            html.Button('Position Info', id='drone_page-button'),
-            href='/drone',
+            html.Button('Position Info', id='info_page-button'),
+            href='/info',
             target='_blank'
         )
     ], style={'display': 'flex', 'justifyContent': 'center', 'gap': '10px'}),
@@ -45,7 +47,10 @@ index_page = html.Div(id='index-page', children=[
     )
 ])
 
-# Swarm info page
+
+#########################
+# Swarm table info page #
+#########################
 info_layout = html.Div(id='info-layout', children=[
     html.Div(id='agent', children=[html.H3('Agent List'), agent_component.layout]),
     html.Div(id='telemetry', children=[html.H3('Telemetry Data'), telemetry_component.layout]),
@@ -58,7 +63,10 @@ info_layout = html.Div(id='info-layout', children=[
     )
 ])
 
-# App layout
+
+##############
+# App layout #
+##############
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content', children=[
@@ -68,55 +76,80 @@ app.layout = html.Div([
 ])
 
 
-
-# Agent component callbacks
+#############################
+# Agent component callbacks #
+#############################
 @app.callback(
     Output('agent_table', 'data'),
-    Input('info_interval-component', 'n_intervals')
+    [Input('agent_dropdown', 'value'),
+     Input('info_interval-component', 'n_intervals')]
 )
-def update_agent_table(n):
-    data, _ = agent_component.read_data()
-    return data
+def update_agent_table(selected_agent, n):
+    agent_df, _ = agent_component.read_agent_data()
+    if selected_agent:
+        filtered_agent_df = agent_df[agent_df['Agent Name'] == selected_agent]
+    else:
+        filtered_agent_df = agent_df
+    return filtered_agent_df.to_dict('records')
 
 
-
-# Telemetry component callbacks
+#################################
+# Telemetry component callbacks #
+#################################
 @app.callback(
     Output('telemetry_table', 'data'),
-    Input('info_interval-component', 'n_intervals')
+    [Input('telemetry_dropdown', 'value'),
+     Input('info_interval-component', 'n_intervals')]
 )
-def update_telemetry_table(n):
-    data, _ = telemetry_component.read_data()
-    return data
+def update_telemetry_table(selected_agent, n):
+    telemetry_df, _ = telemetry_component.read_telemetry_data()
+    if selected_agent:
+        filtered_telemetry_df = telemetry_df[telemetry_df['Agent Name'] == selected_agent]
+    else:
+        filtered_telemetry_df = telemetry_df
+    return filtered_telemetry_df.to_dict('records')
 
 
-
-# Mission component callbacks
+###############################
+# Mission component callbacks #
+###############################
 @app.callback(
     Output('mission_table', 'data'),
-    Input('info_interval-component', 'n_intervals')
+    [Input('mission_dropdown', 'value'),
+     Input('info_interval-component', 'n_intervals')]
 )
-def update_mission_table(n):
-    data, _ = mission_component.read_data()
-    return data
+def update_mission_table(selected_mission, n):
+    mission_df, _ = mission_component.read_mission_data()
+    if selected_mission:
+        filtered_mission_df = mission_df[mission_df['Agent Name'] == selected_mission]
+    else:
+        filtered_mission_df = mission_df
+    return filtered_mission_df.to_dict('records')
 
 
-
-# System component callbacks
+##############################
+# System component callbacks #
+##############################
 @app.callback(
     Output('system_table', 'data'),
-    Input('info_interval-component', 'n_intervals')
+    [Input('system_dropdown', 'value'),
+     Input('info_interval-component', 'n_intervals')]
 )
-def update_system_table(n):
-    data, _ = system_component.read_data()
-    return data
+def update_system_table(selected_system, n):
+    system_df, _ = system_component.read_system_data()
+    if selected_system:
+        filtered_system_df = system_df[system_df['Agent Name'] == selected_system]
+    else:
+        filtered_system_df = system_df
+    return filtered_system_df.to_dict('records')
 
 
-
-# Map component callbacks 
+#################################
+# Swarm position info callbacks #
+#################################
 droneTrajectories = [] # Initialize droneTrajectories as an empty list
 
-@server.route('/drone')
+@server.route('/info')
 def get_drones():
     conn = sqlite3.connect('./src/data/swarm_squad.db')
     agent_df = pd.read_sql('SELECT * FROM telemetry', conn)
@@ -129,18 +162,24 @@ def get_drones():
     return jsonify({'droneNames': droneNames, 'droneCoords': droneCoords, 'droneTrajectories': droneTrajectories})
 
 
-# Update the page content based on the URL
+##############
+# URL Set-up #
+##############
 @app.callback(Output('page-content', 'children'),
               Input('url', 'pathname'))
 def display_page(pathname):
-    if pathname == '/info':
+    if pathname == '/table':
         return info_layout
+    elif pathname == '/info':
+        return get_drones
     elif pathname == '/' or pathname == '/index':
         return index_page
     else:
         return '404 - Page not found'
 
 
-
+###############
+# Run the app #
+###############
 if __name__ == '__main__':
     app.run_server(debug=True)

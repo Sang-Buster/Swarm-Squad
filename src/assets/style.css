@@ -10,7 +10,7 @@ body, button {
 /* -------------------------- */
 /*          Index Page        */
 /* -------------------------- */
-#drone_page-button, #info_page-button {
+#table_page-button, #info_page-button {
     margin: 10px;
     padding: 10px;
     border: 1px solid black;
@@ -18,7 +18,7 @@ body, button {
     font-size: 20px;
 }
 
-#drone_page-button:hover, #info_page-button:hover {
+#table_page-button:hover, #info_page-button:hover {
     background: lightgrey;
 }
 
@@ -29,10 +29,10 @@ body, button {
 /* -------------------------- */
 /*       Swarm Info Page      */
 /* -------------------------- */
-#agent_table,
-#telemetry_table,
-#mission_table,
-#system_table {
+#agent_table, #agent_dropdown,
+#telemetry_table, #telemetry_dropdown,
+#mission_table, #mission_dropdown,
+#system_table, #system_dropdown {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
