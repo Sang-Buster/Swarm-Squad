@@ -22,23 +22,9 @@ body, button {
     background: lightgrey;
 }
 
-#map_table tr:nth-child(odd) {
-    background-color: lightgrey;
-}
-
 /* -------------------------- */
 /*       Swarm Info Page      */
 /* -------------------------- */
-#agent_table, #agent_dropdown,
-#telemetry_table, #telemetry_dropdown,
-#mission_table, #mission_dropdown,
-#system_table, #system_dropdown {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid black;
-}
-
 #info-layout {
     display: grid;
     grid-template-columns: 1fr;
@@ -46,9 +32,31 @@ body, button {
     gap: 10px;
 }
 
+#agent_dropdown,
+#telemetry_dropdown,
+#mission_dropdown,
+#system_dropdown {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid black;
+}
+
+#agent_table, 
+#telemetry_table, 
+#mission_table, 
+#system_table {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
 #agent, #telemetry, #mission, #system {
     grid-column: 1;
     text-align: center;
-    max-height: 40vh;
+    max-height: 55vh;
     overflow: auto;
 }

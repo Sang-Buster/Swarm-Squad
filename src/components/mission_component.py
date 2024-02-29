@@ -22,10 +22,9 @@ mission_data, mission_columns = read_mission_data()
 layout = html.Div([
     dcc.Dropdown(
         id='mission_dropdown',
-        options=[{'label': i, 'value': i} for i in mission_data['Agent Name'].unique()],
         value=None,
         clearable=True,
-        placeholder="Select an agent...",
+        placeholder="Select an mission...",
     ),
     dash_table.DataTable(
         id='mission_table',
@@ -38,5 +37,7 @@ layout = html.Div([
             }
         ],
         style_as_list_view=True,
+        style_table={'overflowX': 'auto'},  
+        style_cell={'textAlign': 'center', 'padding': '0 15px'}, 
     ),
 ])

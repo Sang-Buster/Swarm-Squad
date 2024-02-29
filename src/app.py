@@ -17,6 +17,7 @@ def read_map_html():
     with open(os.path.join(os.path.dirname(__file__), 'components', 'map_component.html'), 'r') as f:
         return f.read()
 
+
 ##################
 # Create the app #
 ##################
@@ -24,6 +25,7 @@ app = dash.Dash(__name__)
 app.title = 'Swarm Squad'
 server = app.server
 CORS(server)
+
 
 ##############
 # Index page #
@@ -90,6 +92,7 @@ app.layout = html.Div([
     ]),
 ])
 
+
 ###########################
 # Map component callbacks #
 ###########################
@@ -109,9 +112,11 @@ def refresh_map(n):
         return read_map_html()
     return dash.no_update
 
+
 #############################
 # Agent component callbacks #
 #############################
+# Callback to update the agent table
 @app.callback(
     Output('agent_table', 'data'),
     [Input('agent_dropdown', 'value'),
@@ -125,10 +130,21 @@ def update_agent_table(selected_agent, n):
         filtered_agent_df = agent_df
     return filtered_agent_df.to_dict('records')
 
+# Callback to update the dropdown menu
+@app.callback(
+    Output('agent_dropdown', 'options'),
+    Input('agent_table', 'data')
+)
+def update_dropdown_options(agent_table_data):
+    if agent_table_data is None:
+        return []
+    df = pd.DataFrame(agent_table_data)
+    return [{'label': i, 'value': i} for i in df['Agent Name'].unique()]
 
 #################################
 # Telemetry component callbacks #
 #################################
+# Callback to update the agent table
 @app.callback(
     Output('telemetry_table', 'data'),
     [Input('telemetry_dropdown', 'value'),
@@ -142,10 +158,22 @@ def update_telemetry_table(selected_agent, n):
         filtered_telemetry_df = telemetry_df
     return filtered_telemetry_df.to_dict('records')
 
+# Callback to update the dropdown menu
+@app.callback(
+    Output('telemetry_dropdown', 'options'),
+    Input('telemetry_table', 'data')
+)
+def update_telemetry_dropdown(telemetry_table_data):
+    if telemetry_table_data is None:
+        return []
+    df = pd.DataFrame(telemetry_table_data)
+    return [{'label': i, 'value': i} for i in df['Agent Name'].unique()]
+
 
 ###############################
 # Mission component callbacks #
 ###############################
+# Callback to update the agent table
 @app.callback(
     Output('mission_table', 'data'),
     [Input('mission_dropdown', 'value'),
@@ -154,15 +182,27 @@ def update_telemetry_table(selected_agent, n):
 def update_mission_table(selected_mission, n):
     mission_df, _ = mission_component.read_mission_data()
     if selected_mission:
-        filtered_mission_df = mission_df[mission_df['Agent Name'] == selected_mission]
+        filtered_mission_df = mission_df[mission_df['Mission'] == selected_mission]
     else:
         filtered_mission_df = mission_df
     return filtered_mission_df.to_dict('records')
+
+# Callback to update the dropdown menu
+@app.callback(
+    Output('mission_dropdown', 'options'),
+    Input('mission_table', 'data')
+)
+def update_mission_dropdown(mission_table_data):
+    if mission_table_data is None:
+        return []
+    df = pd.DataFrame(mission_table_data)
+    return [{'label': i, 'value': i} for i in df['Mission'].unique()]
 
 
 ##############################
 # System component callbacks #
 ##############################
+# Callback to update the agent table
 @app.callback(
     Output('system_table', 'data'),
     [Input('system_dropdown', 'value'),
@@ -175,6 +215,17 @@ def update_system_table(selected_system, n):
     else:
         filtered_system_df = system_df
     return filtered_system_df.to_dict('records')
+
+# Callback to update the dropdown menu
+@app.callback(
+    Output('system_dropdown', 'options'),
+    Input('system_table', 'data')
+)
+def update_system_dropdown(system_table_data):
+    if system_table_data is None:
+        return []
+    df = pd.DataFrame(system_table_data)
+    return [{'label': i, 'value': i} for i in df['Agent Name'].unique()]
 
 
 #################################

@@ -22,7 +22,6 @@ agent_data, agent_columns = read_agent_data()
 layout = html.Div([
     dcc.Dropdown(
         id='agent_dropdown',
-        options=[{'label': i, 'value': i} for i in agent_data['Agent Name'].unique()],
         value=None,
         clearable=True,
         placeholder="Select an agent...",
@@ -38,5 +37,7 @@ layout = html.Div([
             }
         ],
         style_as_list_view=True,
+        style_table={'overflowX': 'auto'},
+        style_cell={'textAlign': 'center', 'padding': '0 15px'},
     ),
 ])
