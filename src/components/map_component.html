@@ -86,6 +86,9 @@
                             let drones = [];
                             let droneCoords = data.droneCoords; // Get the initial coordinates from the server
                             let droneNames = data.droneNames; // Get the drone names from the server
+                            let dronePitch = data.dronePitch; // Get the drone pitch from the server
+                            let droneYaw = data.droneYaw; // Get the drone yaw from the server
+                            let droneRoll = data.droneRoll; // Get the drone roll from the server
 
                             for (let i = 0; i < droneCoords.length; i++) {
                                 var options = {
@@ -93,7 +96,7 @@
                                     type: 'gltf',
                                     scale: 1,
                                     units: 'meters',
-                                    rotation: { x: 90, y: -90, z: 0 },
+                                    rotation: { x: dronePitch[i], y: droneYaw[i], z: droneRoll[i] }, // Use the numbers for rotation                              
                                 }
 
                                 tb.loadObj(options, function (model) {

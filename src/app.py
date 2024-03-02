@@ -9,7 +9,9 @@ from components import agent_component, telemetry_component, mission_component, 
 # Imports for swarm position info page
 import pandas as pd
 import sqlite3
-from flask import jsonify
+from flask import Response
+import json
+from collections import OrderedDict
 
 # Imports for map component in index page
 import os
@@ -241,10 +243,23 @@ def get_drones():
 
     droneNames = agent_df['Agent Name'].unique().tolist()
     droneCoords = agent_df.groupby('Agent Name')['Location'].apply(list).tolist()
-    droneTrajectories.append(droneCoords)
+    dronePitch = agent_df.groupby('Agent Name')['Pitch'].apply(list).tolist()
+    droneYaw = agent_df.groupby('Agent Name')['Yaw'].apply(list).tolist()
+    droneRoll = agent_df.groupby('Agent Name')['Roll'].apply(list).tolist()
+    droneTrajectories.append([droneCoords, dronePitch, droneYaw, droneRoll])
 
-    return jsonify({'droneNames': droneNames, 'droneCoords': droneCoords, 'droneTrajectories': droneTrajectories})
+    data = OrderedDict([
+        ('droneNames', droneNames),
+        ('droneCoords', droneCoords),
+        ('dronePitch', dronePitch),
+        ('droneYaw', droneYaw),
+        ('droneRoll', droneRoll),
+        ('droneTrajectories', droneTrajectories)
+    ])
 
+    response = Response(json.dumps(data), mimetype='application/json')
+
+    return response
 
 ##############
 # URL Set-up #
