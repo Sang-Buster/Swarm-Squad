@@ -23,7 +23,7 @@ def read_map_html():
 ##################
 # Create the app #
 ##################
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, update_title=None)
 app.title = 'Swarm Squad'
 server = app.server
 CORS(server)
