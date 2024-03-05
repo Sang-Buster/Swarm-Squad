@@ -5,16 +5,22 @@ import time
 
 # Define the columns for the Telemetry Data table
 telemetry_columns = ['Agent Name', 'Location', 'Destination', 'Altitude', 'Pitch', 'Yaw', 'Roll', 'Airspeed/Velocity', 'Acceleration', 'Angular Velocity']
+latitude = [random.uniform(29.187, 29.1940) for _ in range(10)]
+longitude = [random.uniform(-81.044, -81.052) for _ in range(10)]
+altitude = [round(random.uniform(0, 40), 3) for _ in range(10)]  # Altitude in meters
+yaw = [0 for _ in range(10)]
+roll = [0 for _ in range(10)]
 
 while True:
     # Generate fake data for each column
     agent_name = range(1, 11)
-    altitude = [round(random.uniform(0, 40), 3) for _ in range(10)]  # Altitude in meters
-    location = [f"{random.uniform(-81.044, -81.052):.4f}, {random.uniform(29.187, 29.1940):.4f}, {altitude[i]}" for i in range(10)]
-    destination = [f"{random.uniform(29.187, 29.1940):.4f}, {random.uniform(81.044, 81.052):.4f}, 50" for _ in range(10)]
-    pitch = [random.randint(-180, 180) for _ in range(10)]
-    yaw = [random.randint(-180, 180) for _ in range(10)]
-    roll = [random.randint(-180, 180) for _ in range(10)]
+    latitude = [lat + random.uniform(0.00001, 0.0001) for lat in latitude]  # Moving North
+    altitude = [alt + random.uniform(-0.1, 0.1) for alt in altitude]  # Altitude in meters
+    location = [f"{longitude[i]:.4f}, {latitude[i]:.4f}, {altitude[i]}" for i in range(10)]
+    destination = [f"{longitude[i]:.4f}, {latitude[i] + random.uniform(0.0001, 0.001):.4f}, 50" for i in range(10)]  # Destination North
+    pitch = [90 for _ in range(10)]
+    yaw = [y + random.uniform(0, 0.001) for y in yaw]
+    roll = [r + random.uniform(0, 0.001) for r in roll]
     airspeed_velocity = [round(random.uniform(50, 200), 3) for _ in range(10)]  # Airspeed/Velocity in km/h
     acceleration = [round(random.uniform(0, 10), 3) for _ in range(10)]  # Acceleration in m/s^2
     angular_velocity = [round(random.uniform(-3.14, 3.14), 3) for _ in range(10)]  # Angular Velocity in rad/s

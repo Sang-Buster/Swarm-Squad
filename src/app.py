@@ -1,6 +1,5 @@
 import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash import Dash, html, dcc, Input, Output, clientside_callback
 from flask_cors import CORS
 
 # Imports for swarm table info page
@@ -23,8 +22,7 @@ def read_map_html():
 ##################
 # Create the app #
 ##################
-app = dash.Dash(__name__, update_title=None)
-app.title = 'Swarm Squad'
+app = Dash(__name__, update_title=None, title='Swarm Squad')
 server = app.server
 CORS(server)
 
@@ -32,7 +30,7 @@ CORS(server)
 ##############
 # Index page #
 ##############
-index_page = html.Div(id='index-page', children=[
+index_page = html.Div(id='index-layout', children=[
     html.Div(id='title', children=[
         html.Img(src='/assets/favicon.ico', style={'height':'250px', 'width':'250px'}),
         html.H1('Swarm Squad', style={'marginTop':'-10px'})
@@ -70,7 +68,7 @@ index_page = html.Div(id='index-page', children=[
 #########################
 # Swarm table info page #
 #########################
-info_layout = html.Div(id='info-layout', children=[
+table_page = html.Div(id='info-layout', children=[
     html.Div(id='agent', children=[html.H3('Agent List'), agent_component.layout]),
     html.Div(id='telemetry', children=[html.H3('Telemetry Data'), telemetry_component.layout]),
     html.Div(id='mission', children=[html.H3('Mission Detail'), mission_component.layout]),
@@ -88,11 +86,28 @@ info_layout = html.Div(id='info-layout', children=[
 ##############
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
+    html.Div(id='page-title'),
     html.Div(id='page-content', children=[
         index_page,
-        info_layout,
+        table_page,
     ]),
 ])
+
+app.clientside_callback(
+    """
+    function(pathname) {
+        if (pathname === '/table') {
+            document.title = 'Swarm Table | Swarm Squad'
+        } else if (pathname === '/info') {
+            document.title = 'Swarm Info | Swarm Squad'
+        } else {
+            document.title = 'Swarm Squad'
+        }
+    }
+    """,
+    Output('page-title', 'children'),
+    Input('url', 'pathname')
+)
 
 
 ###########################
@@ -142,6 +157,7 @@ def update_dropdown_options(agent_table_data):
         return []
     df = pd.DataFrame(agent_table_data)
     return [{'label': i, 'value': i} for i in df['Agent Name'].unique()]
+
 
 #################################
 # Telemetry component callbacks #
@@ -236,7 +252,7 @@ def update_system_dropdown(system_table_data):
 droneTrajectories = [] # Initialize droneTrajectories as an empty list
 
 @server.route('/info')
-def get_drones():
+def info_page():
     conn = sqlite3.connect('./src/data/swarm_squad.db')
     agent_df = pd.read_sql('SELECT * FROM telemetry', conn)
     conn.close()
@@ -261,6 +277,7 @@ def get_drones():
 
     return response
 
+
 ##############
 # URL Set-up #
 ##############
@@ -268,9 +285,9 @@ def get_drones():
               Input('url', 'pathname'))
 def display_page(pathname):
     if pathname == '/table':
-        return info_layout
+        return table_page
     elif pathname == '/info':
-        return get_drones
+        return info_page
     elif pathname == '/' or pathname == '/index':
         return index_page
     else:
