@@ -34,7 +34,7 @@ CORS(server)
 ##############
 index_page = html.Div(id='index-page', children=[
     html.Div(id='title', children=[
-        html.Img(src='/assets/swarm_squad-B.svg', style={'height':'100px', 'width':'100px'}),
+        html.Img(src='/assets/favicon.ico', style={'height':'250px', 'width':'250px'}),
         html.H1('Swarm Squad', style={'marginTop':'-10px'})
     ], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}),
     html.Div(children=[
