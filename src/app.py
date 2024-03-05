@@ -33,11 +33,11 @@ CORS(server)
 # Index page #
 ##############
 index_page = html.Div(id='index-page', children=[
-    html.Center(id='title', children=[
+    html.Div(id='title', children=[
         html.Img(src='/assets/swarm_squad-B.svg', style={'height':'100px', 'width':'100px'}),
         html.H1('Swarm Squad', style={'marginTop':'-10px'})
-    ]),
-    html.Center(id='map-container', children=[
+    ], style={'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center'}),
+    html.Div(children=[
         html.Div([
             html.Iframe(id='map', srcDoc=read_map_html(), style={"height": "780px", "width": "100%"})
         ], style={'width': '100%', 'margin': "0 auto"}),
@@ -47,7 +47,7 @@ index_page = html.Div(id='index-page', children=[
             n_intervals=0
         )
     ]),    
-    html.Center(id='info-buttons', children=[
+    html.Div(id='subpage-buttons', children=[
         html.A(
             html.Button('Swarm Table', id='table_page-button'),
             href='/table',
