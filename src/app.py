@@ -1,5 +1,5 @@
 import dash
-from dash import Dash, html, dcc, Input, Output, clientside_callback
+from dash import Dash, html, dcc, Input, Output
 from flask_cors import CORS
 
 # Imports for swarm table info page
@@ -74,7 +74,7 @@ table_page = html.Div(id='info-layout', children=[
     html.Div(id='mission', children=[html.H3('Mission Detail'), mission_component.layout]),
     html.Div(id='system', children=[html.H3('System Health'), system_component.layout]),
     dcc.Interval(
-        id='info_interval-component',
+        id='table_interval-component',
         interval=500,
         n_intervals=0
     )
@@ -137,7 +137,7 @@ def refresh_map(n):
 @app.callback(
     Output('agent_table', 'data'),
     [Input('agent_dropdown', 'value'),
-     Input('info_interval-component', 'n_intervals')]
+     Input('table_interval-component', 'n_intervals')]
 )
 def update_agent_table(selected_agent, n):
     agent_df, _ = agent_component.read_agent_data()
@@ -166,7 +166,7 @@ def update_dropdown_options(agent_table_data):
 @app.callback(
     Output('telemetry_table', 'data'),
     [Input('telemetry_dropdown', 'value'),
-     Input('info_interval-component', 'n_intervals')]
+     Input('table_interval-component', 'n_intervals')]
 )
 def update_telemetry_table(selected_agent, n):
     telemetry_df, _ = telemetry_component.read_telemetry_data()
@@ -195,7 +195,7 @@ def update_telemetry_dropdown(telemetry_table_data):
 @app.callback(
     Output('mission_table', 'data'),
     [Input('mission_dropdown', 'value'),
-     Input('info_interval-component', 'n_intervals')]
+     Input('table_interval-component', 'n_intervals')]
 )
 def update_mission_table(selected_mission, n):
     mission_df, _ = mission_component.read_mission_data()
@@ -224,7 +224,7 @@ def update_mission_dropdown(mission_table_data):
 @app.callback(
     Output('system_table', 'data'),
     [Input('system_dropdown', 'value'),
-     Input('info_interval-component', 'n_intervals')]
+     Input('table_interval-component', 'n_intervals')]
 )
 def update_system_table(selected_system, n):
     system_df, _ = system_component.read_system_data()
@@ -249,8 +249,6 @@ def update_system_dropdown(system_table_data):
 #################################
 # Swarm position info callbacks #
 #################################
-droneTrajectories = [] # Initialize droneTrajectories as an empty list
-
 @server.route('/info')
 def info_page():
     conn = sqlite3.connect('./src/data/swarm_squad.db')
@@ -262,7 +260,6 @@ def info_page():
     dronePitch = agent_df.groupby('Agent Name')['Pitch'].apply(list).tolist()
     droneYaw = agent_df.groupby('Agent Name')['Yaw'].apply(list).tolist()
     droneRoll = agent_df.groupby('Agent Name')['Roll'].apply(list).tolist()
-    droneTrajectories.append([droneCoords, dronePitch, droneYaw, droneRoll])
 
     data = OrderedDict([
         ('droneNames', droneNames),
@@ -270,7 +267,6 @@ def info_page():
         ('dronePitch', dronePitch),
         ('droneYaw', droneYaw),
         ('droneRoll', droneRoll),
-        ('droneTrajectories', droneTrajectories)
     ])
 
     response = Response(json.dumps(data), mimetype='application/json')
