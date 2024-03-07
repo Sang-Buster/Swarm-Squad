@@ -6,6 +6,7 @@ from packaging import version
 REQUIRED_PACKAGES = [
     'dash>=2.15.0',
     'plotly>=5.19.0',
+    'matplotlib>=3.4.3',
     'pandas>=2.2.1',
     'flask>=3.0.2',
     'flask-cors>=4.0.0',
