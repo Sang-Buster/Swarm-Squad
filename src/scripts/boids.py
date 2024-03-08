@@ -1,20 +1,19 @@
 import numpy as np
-import pandas as pd
-import random
-import sqlite3
-import time
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.widgets import Slider, Button
+
+# Write the data to the SQLite database
+import pandas as pd
+import random
+import time
+from db_writer_telemetry_tbl import telemetry_tbl_writer
+
 
 class Boid:
     def __init__(self, position, velocity):
         self.position = position
         self.velocity = velocity
-
-    def limit_speed(self, max_speed):
-        speed = np.linalg.norm(self.velocity)
-        if speed > max_speed:
-            self.velocity = (self.velocity / speed) * max_speed
 
 
 class Flock:
@@ -23,15 +22,13 @@ class Flock:
         self.x_center = (29.187 + 29.191) / 2
         self.y_center = (-81.048 + -81.052) / 2
         self.z_center = (5 + 50) / 2
-                    
-    def update_boids(self):
+       
+    def update_boids(self, cohesion_weight, separation_weight, alignment_weight):
         for boid in self.boids:
-            v1 = self.rule1(boid) * 0.02
-            v2 = self.rule2(boid) * 0.05
-            v3 = self.rule3(boid) * 0.02
-            v4 = self.rule4(boid)
-            boid.velocity += (v1 + v2 + v3) * v4
-            boid.limit_speed(2)
+            v1 = self.rule1(boid) * cohesion_weight
+            v2 = self.rule2(boid) * separation_weight
+            v3 = self.rule3(boid) * alignment_weight
+            boid.velocity += v1 + v2 + v3
             boid.position += boid.velocity
 
         # Extract positions into a separate array
@@ -50,27 +47,21 @@ class Flock:
             boid.position[1] = self.y_center + boid.position[1] * (-81.048 - -81.052)
             boid.position[2] = self.z_center + boid.position[2] * (50 - 5)
 
-        # # Create a DataFrame with the boids' data
-        # data = {
-        #     'Agent Name': range(1, len(self.boids) + 1),
-        #     'Location': [f"{boid.position[1]:.4f}, {boid.position[0]:.4f}, {boid.position[2]}" for boid in self.boids],
-        #     'Destination': [f"{boid.position[0]:.4f}, {boid.position[1] + random.uniform(0.0001, 0.001):.4f}, 50" for boid in self.boids],
-        #     'Altitude': [boid.position[2] for boid in self.boids],
-        #     'Pitch': [90 for _ in self.boids],
-        #     'Yaw': [0 for _ in self.boids],
-        #     'Roll': [0 for _ in self.boids],
-        #     'Airspeed/Velocity': [np.linalg.norm(boid.velocity) for boid in self.boids],
-        #     'Acceleration': [0 for _ in self.boids],  # You'll need to calculate this
-        #     'Angular Velocity': [0 for _ in self.boids]  # You'll need to calculate this
-        # }
-        # telemetry_df = pd.DataFrame(data)
-
-        # # Write the data to the SQLite database
-        # conn = sqlite3.connect('./src/data/swarm_squad.db')
-        # telemetry_df.to_sql('telemetry', conn, if_exists='replace', index=False)
-        # conn.close()
-
-        # print("Updated the database")
+        # Create a DataFrame with the boids' data
+        data = {
+            'Agent Name': range(1, len(self.boids) + 1),
+            'Location': [f"{boid.position[1]:.4f}, {boid.position[0]:.4f}, {boid.position[2]:.4f}" for boid in self.boids],
+            'Destination': [f"{boid.position[0]:.4f}, {boid.position[1] + random.uniform(0.0001, 0.001):.4f}, 50" for boid in self.boids], # Placeholder for now
+            'Altitude': [boid.position[2] for boid in self.boids],
+            'Pitch': [90 for _ in self.boids],
+            'Yaw': [0 for _ in self.boids],
+            'Roll': [0 for _ in self.boids],
+            'Airspeed/Velocity': [np.linalg.norm(boid.velocity) for boid in self.boids], # Placeholder for now
+            'Acceleration': [0 for _ in self.boids], # Placeholder for now
+            'Angular Velocity': [0 for _ in self.boids] # Placeholder for now
+        }
+        telemetry_df = pd.DataFrame(data)
+        telemetry_tbl_writer(telemetry_df)
             
     # Cohesion
     def rule1(self, boid):
@@ -85,7 +76,7 @@ class Flock:
     def rule2(self, boid):
         c = np.zeros(3)
         for other_boid in self.boids:
-            if other_boid != boid and np.linalg.norm(other_boid.position - boid.position) < 2:  # Increase separation distance
+            if other_boid != boid and np.linalg.norm(other_boid.position - boid.position) < 3:
                 c -= (other_boid.position - boid.position)
         return c
 
@@ -98,35 +89,99 @@ class Flock:
         else:
             return np.zeros(3)
 
-    def rule4(self, boid):
-        avg_velocity = np.zeros(3)
-        for other_boid in self.boids:
-            if other_boid != boid:
-                avg_velocity += other_boid.velocity
-        avg_velocity /= len(self.boids) - 1
-        return (avg_velocity - boid.velocity) 
 
-
-flock = Flock(100)
-
-fig = plt.figure()
+fig = plt.figure(figsize=(12, 8))
 ax = fig.add_subplot(111, projection='3d')
 
-scatter = ax.scatter([boid.position[0] for boid in flock.boids], 
-                     [boid.position[1] for boid in flock.boids], 
-                     [boid.position[2] for boid in flock.boids])
+# Create the position of the sliders
+plt.subplots_adjust(left=0.1, bottom=0.3)
+ax_cohesion   = plt.axes([0.15, 0.20, 0.75, 0.02])
+ax_separation = plt.axes([0.15, 0.15, 0.75, 0.02])
+ax_alignment  = plt.axes([0.15, 0.10, 0.75, 0.02])
+ax_boids      = plt.axes([0.15, 0.05, 0.75, 0.02])
+
+cohesion_slider = Slider(ax_cohesion, 'Cohesion', 0, 5, valinit=0.07)
+separation_slider = Slider(ax_separation, 'Separation', 0, 5, valinit=0.03)
+alignment_slider = Slider(ax_alignment, 'Alignment', 0, 5, valinit=0.05)
+boids_slider = Slider(ax_boids, 'Boids', 1, 200, valinit=100, valstep=1)
+
+# Create the position of the buttons
+ax_restart = plt.axes([0.9, 0.60, 0.07, 0.05])
+ax_pause = plt.axes([0.9, 0.50, 0.07, 0.05])
+ax_continue = plt.axes([0.9, 0.40, 0.07, 0.05])
+ax_stop = plt.axes([0.9, 0.30, 0.07, 0.05])
+
+# Create the buttons with hexadecimal color codes
+restart_button = Button(ax_restart, 'Restart', color='#e3f0d8')  # Green
+pause_button = Button(ax_pause, 'Pause', color='#fdf2ca')  # Yellow
+continue_button = Button(ax_continue, 'Continue', color='#d8e3f0')  # Blue
+stop_button = Button(ax_stop, 'Stop', color='#f9aeae')  # Red
+
+# Create a global variable to control the animation
+running = True
+
+def restart(event):
+    global flock, running
+    # Reset the flock to its initial state
+    flock = Flock(int(boids_slider.val))
+    # Reset the running variable to True
+    running = True
+    # Reset the slider values to their initial values
+    cohesion_slider.set_val(0.07)
+    separation_slider.set_val(0.03)
+    alignment_slider.set_val(0.05)
+    boids_slider.set_val(100)
+
+def pause(event):
+    global running
+    running = False
+    
+def continues(event):
+    global running
+    running = True
+    
+def stop(event):
+    global running
+    running = False
+    plt.close() 
+
+
+# Assign the functions to the buttons
+restart_button.on_clicked(restart)
+pause_button.on_clicked(pause)
+continue_button.on_clicked(continues)
+stop_button.on_clicked(stop)
+
+
+# Create the initial flock
+flock = Flock(int(boids_slider.val))
 
 def animate(i):
-    ax.clear()
-    flock.update_boids()
-    ax.scatter([boid.position[0] for boid in flock.boids], 
-               [boid.position[1] for boid in flock.boids], 
-               [boid.position[2] for boid in flock.boids])
-    
+    global running
+    if running:
+        ax.clear()
+        flock.update_boids(cohesion_slider.val, separation_slider.val, alignment_slider.val)
+        ax.scatter([boid.position[0] for boid in flock.boids], 
+                   [boid.position[1] for boid in flock.boids], 
+                   [boid.position[2] for boid in flock.boids])
+        # time.sleep(0.1)  # Pause for .1 second
+
+def update(val):
+    global flock
+    flock = Flock(int(boids_slider.val))
+
+boids_slider.on_changed(update)
+
 ani = FuncAnimation(fig, animate, frames=500, interval=100)
 
 plt.show()
 
-# # Update the boids and write their data to the database every half second
-# while True:
-#     flock.update_boids()
+# Save the id of the figure
+fig_id = fig.number
+
+# Update the boids and write their data to the database every half second
+while True:
+    # If the figure doesn't exist, break the loop
+    if not plt.fignum_exists(fig_id):
+        break
+    flock.update_boids(cohesion_slider.val, separation_slider.val, alignment_slider.val)
