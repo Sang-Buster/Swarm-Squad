@@ -50,8 +50,8 @@ class Flock:
         # Create a DataFrame with the boids' data
         data = {
             'Agent Name': range(1, len(self.boids) + 1),
-            'Location': [f"{boid.position[1]:.4f}, {boid.position[0]:.4f}, {boid.position[2]:.4f}" for boid in self.boids],
-            'Destination': [f"{boid.position[0]:.4f}, {boid.position[1] + random.uniform(0.0001, 0.001):.4f}, 50" for boid in self.boids], # Placeholder for now
+            'Location': [f"{boid.position[1]}, {boid.position[0]}, {boid.position[2]}" for boid in self.boids],
+            'Destination': [f"{boid.position[0]}, {boid.position[1] + random.uniform(0.0001, 0.001)}, 50" for boid in self.boids], # Placeholder for now
             'Altitude': [boid.position[2] for boid in self.boids],
             'Pitch': [90 for _ in self.boids],
             'Yaw': [0 for _ in self.boids],

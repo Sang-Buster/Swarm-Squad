@@ -141,6 +141,7 @@ def refresh_map(n):
 )
 def update_agent_table(selected_agent, n):
     agent_df, _ = agent_component.read_agent_data()
+    agent_df = agent_df.round(4)
     if selected_agent:
         filtered_agent_df = agent_df[agent_df['Agent Name'] == selected_agent]
     else:
@@ -170,6 +171,14 @@ def update_dropdown_options(agent_table_data):
 )
 def update_telemetry_table(selected_agent, n):
     telemetry_df, _ = telemetry_component.read_telemetry_data()
+    def round_string_numbers(s):
+        if isinstance(s, str):
+            return ','.join([str(round(float(i), 4)) for i in s.split(',')])
+        else:
+            return s
+    for col in telemetry_df.columns:
+        telemetry_df[col] = telemetry_df[col].apply(round_string_numbers)    
+    telemetry_df = telemetry_df.round(4)
     if selected_agent:
         filtered_telemetry_df = telemetry_df[telemetry_df['Agent Name'] == selected_agent]
     else:
@@ -199,6 +208,7 @@ def update_telemetry_dropdown(telemetry_table_data):
 )
 def update_mission_table(selected_mission, n):
     mission_df, _ = mission_component.read_mission_data()
+    mission_df = mission_df.round(4)
     if selected_mission:
         filtered_mission_df = mission_df[mission_df['Mission'] == selected_mission]
     else:
@@ -228,6 +238,7 @@ def update_mission_dropdown(mission_table_data):
 )
 def update_system_table(selected_system, n):
     system_df, _ = system_component.read_system_data()
+    system_df = system_df.round(4)
     if selected_system:
         filtered_system_df = system_df[system_df['Agent Name'] == selected_system]
     else:
