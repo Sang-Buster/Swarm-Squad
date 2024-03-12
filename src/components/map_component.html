@@ -114,7 +114,7 @@
                                     } else {
                                         // Add new drone
                                         var options = {
-                                            obj: '../assets/drone.glb',
+                                            obj: '../assets/models/drone.glb',
                                             type: 'gltf',
                                             scale: 0.5,
                                             units: 'meters',
@@ -126,7 +126,7 @@
                                             drone.name = name; // Set the name of the drone
 
                                             // Add a tooltip to the drone
-                                            drone.addTooltip('Drone ' + name + ': (' + coords.join(', ') + ')', true);
+                                            drone.addTooltip('Drone ' + name, true);
 
                                             // Start the animations
                                             if (model.children[0].animations && model.children[0].animations.length > 0) {

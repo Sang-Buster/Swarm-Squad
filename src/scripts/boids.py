@@ -7,7 +7,7 @@ from matplotlib.widgets import Slider, Button
 import pandas as pd
 import random
 import time
-from db_writer_telemetry_tbl import telemetry_tbl_writer
+from db_writer.db_writer_telemetry_tbl import telemetry_tbl_writer
 
 
 class Boid:
@@ -164,7 +164,6 @@ def animate(i):
         ax.scatter([boid.position[0] for boid in flock.boids], 
                    [boid.position[1] for boid in flock.boids], 
                    [boid.position[2] for boid in flock.boids])
-        # time.sleep(0.1)  # Pause for .1 second
 
 def update(val):
     global flock
