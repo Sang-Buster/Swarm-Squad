@@ -18,9 +18,7 @@ REQUIRED_PACKAGES = [
     'flask-cors>=4.0.0',
 ]
 
-not_installed_packages = []
-
-for package in REQUIRED_PACKAGES:
+def check_package(package):
     try:
         if '==' in package:
             package_name, package_version = package.split('==')
@@ -37,14 +35,21 @@ for package in REQUIRED_PACKAGES:
 
         if condition:
             print('{} ({}) is installed, but {} is required'.format(dist.metadata['Name'], dist.version, package_version))
-            subprocess.call([sys.executable, "-m", "pip", "install", package])
-            not_installed_packages.append(package)
+            return False
         else:
             print('{} ({}) is installed'.format(dist.metadata['Name'], dist.version))
+            return True
     except PackageNotFoundError:
         print('{} is NOT installed'.format(package))
+        return False
+
+not_installed_packages = []
+
+for package in REQUIRED_PACKAGES:
+    if not check_package(package):
         subprocess.call([sys.executable, "-m", "pip", "install", package])
-        not_installed_packages.append(package)
+        if not check_package(package):
+            not_installed_packages.append(package)
 
 if not_installed_packages:
     print("The following packages are not installed:")
