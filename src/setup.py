@@ -1,6 +1,12 @@
 import subprocess
 import sys
 from importlib.metadata import distribution, PackageNotFoundError
+
+try:
+    from packaging import version
+except ImportError:
+    subprocess.call([sys.executable, "-m", "pip", "install", "packaging"])
+
 from packaging import version
 
 REQUIRED_PACKAGES = [
