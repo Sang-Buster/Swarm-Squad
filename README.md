@@ -1,6 +1,6 @@
 <div align="center">
    <a href="https://github.com/Sang-Buster/Swarm-Squad">
-      <img src="https://github.com/Sang-Buster/Swarm-Squad/raw/main/src/assets/favicon.ico" width=20% alt="logo">
+      <img src="/src/assets/favicon.ico" width=20% alt="logo">
    </a>   
    <h1>Swarm Squad</h1>
    <h5>A simulation framework for multi-agent systems.</h5>
@@ -14,7 +14,9 @@
 
 ---
 
-## ✨ Key Features
+<div align="center">
+  <h2>✨ Key Features</h2>
+</div>
 
 1. **Agent Simulation:** Swarm Squad allows you to simulate the behavior of multiple agents in a controlled environment. This is essential for testing how agents interact with each other and their environment.
 
@@ -38,25 +40,94 @@
 
 ---
 
-## 🛠️ Approach
+<div align="center">
+  <h2>🛠️ Setup & Installation</h2>
+</div>
 
-**Backend (Flask/Django):**
-   - Use SQLite to store the UAV data and ZeroMQ to facilitate real-time communication between UAVs. Set up Flask or Django to handle the backend logic, manage routes, and serve the web application. Additionally, embed an SQLite database within your dashboard to facilitate seamless interaction with UAV data.
+1. **Clone the repository and navigate to project folder:**
+   ```bash
+   git clone https://github.com/Sang-Buster/Swarm-Squad
+   cd Swarm-Squad
+   ```
 
-**Frontend (Plotly Dash/Bokeh/Streamlit):**
-   - Utilize one of these libraries to create interactive data visualizations and user interfaces. Display UAV data in charts and provide input selection boxes for selecting agents.
+2. **Install uv first:**
+   ```bash
+   # macOS/Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
 
-**3D Visualization (Cesium.js/Three.js/Mapbox/Dash Deck):**
-   - Integrate one of these libraries to create a 3D visualization of the UAV swarm movement. Provide the immersive 3D experience.
+   ```bash
+   # Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+
+3. **Create a virtual environment at `/weather-dashboard/.venv/`:**
+   ```bash
+   uv venv --python 3.12.1
+   ```
+
+4. **Activate the virtual environment:**
+   ```bash
+   # macOS/Linux
+   source .venv/bin/activate
+   ```
+
+   ```bash
+   # Windows
+   .venv\Scripts\activate
+   ```
+
+5. **Install the required packages:**
+   ```bash
+   uv pip install -r requirements.txt
+   ```
+
+<div align="center">
+  <h2>👨‍💻 Development Setup</h2>
+</div>
+
+### Development Instructions 
+
+1. **Install pre-commit:**
+   ```bash
+   uv pip install pre-commit
+   ```
+   Pre-commit helps maintain code quality by running automated checks before commits are made.
+
+2. **Install git hooks:**
+   ```bash
+   pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
+   ```
+
+   These hooks perform different checks at various stages:
+   - `commit-msg`: Ensures commit messages follow the conventional format
+   - `pre-commit`: Runs Ruff linting and formatting checks before each commit
+   - `pre-push`: Performs final validation before pushing to remote
+  
+3. **Code Linting:**
+   ```bash
+   ruff check
+   ruff format
+   ```
+
+4. **Run the application:**
+   ```bash
+   python src/app.py
+   ```
 
 ---
 
-## 📅 Plan: 
+<div align="center">
+  <h2>📅 Plan</h2>
+</div>
+
    - Use Plotly Dash, SQLite, and Mapbox to improve the simulator. 
    - Wrap into a local simulator not planning on deploying it to a web app as of now.
 ---
 
-## 📊 Dashboard:
+<div align="center">
+  <h2>📊 Dashboard</h2>
+</div>
 
 **Agent List:**
 - Agent Name: (1, 2, 3, ...)

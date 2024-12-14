@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <title>Swarm Map</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
     <link rel="icon" href="../assets/favicon.ico" type="image/x-icon">
@@ -29,9 +31,20 @@
     <link href="https://cdn.jsdelivr.net/gh/jscastro76/threebox@v.2.2.7/dist/threebox.css" rel="stylesheet" />
     <div id="map"></div>
     <script>
-        mapboxgl.accessToken = '';
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic3hpbmcxIiwiYSI6ImNscHgxd2t6ajBoN3EycHF4YTJsNmlhZ3IifQ.1hp7HKvG4JPesIU1zrvtzg';
 
         var origin = [-81.049, 29.189, 50];
+
+        // Add this before map initialization
+        mapboxgl.prewarm();
+
+        // Configure WebGL context attributes
+        const contextOptions = {
+            antialias: true,
+            alpha: false,
+            preserveDrawingBuffer: false,
+            powerPreference: 'high-performance'
+        };
 
         // Initialize a map
         const map = new mapboxgl.Map({
@@ -41,7 +54,12 @@
             pitch: 70,
             bearing: 0,
             zoom: 16.5,
-            antialias: true
+            antialias: true,
+            webGLContextAttributes: contextOptions,  // Add WebGL context options
+            trackResize: true,
+            collectResourceTiming: false,
+            enableEventLogging: false,  // Disable Mapbox events logging
+            crossSourceCollisions: false
         });
 
         // Add full screen controls to the map.
@@ -69,12 +87,14 @@
                 'exaggeration': 1.5
             });
 
+            // Declare drones at a higher scope
+            let drones = {};
+
             map.addLayer({
                 id: 'custom_layer',
                 type: 'custom',
                 renderingMode: '3d',
                 onAdd: function (map, mbxContext) {
-
                     window.tb = new Threebox(
                         map,
                         mbxContext,
@@ -87,9 +107,6 @@
                             enableTooltips: true
                         }
                     );
-
-                    // Change drones to an object
-                    let drones = {};
 
                     // Update drone positions every 100 mili-second
                     setInterval(function () {
@@ -118,23 +135,38 @@
                                             type: 'gltf',
                                             scale: 0.5,
                                             units: 'meters',
-                                            rotation: { x: dronePitch[i], y: droneYaw[i], z: droneRoll[i] }, // Use the numbers for rotation                              
-                                        }
+                                            rotation: { x: dronePitch[i], y: droneYaw[i], z: droneRoll[i] },
+                                            animation: {
+                                                enabled: true,
+                                                animationData: {
+                                                    autostart: true,
+                                                    loop: true,
+                                                    duration: 1000
+                                                }
+                                            }
+                                        };
 
                                         tb.loadObj(options, function (model) {
                                             let drone = model.setCoords(coords);
-                                            drone.name = name; // Set the name of the drone
-
+                                            drone.name = name;
+                                            
                                             // Add a tooltip to the drone
                                             drone.addTooltip('Drone ' + name, true);
-
-                                            // Start the animations
-                                            if (model.children[0].animations && model.children[0].animations.length > 0) {
-                                                drone.mixer = new THREE.AnimationMixer(model.children[0]);
-                                                drone.action = drone.mixer.clipAction(model.children[0].animations[0]);
-                                                drone.action.play();
+                                            
+                                            // Initialize animation mixer
+                                            if (model.animations && model.animations.length > 0) {
+                                                drone.mixer = new THREE.AnimationMixer(model);
+                                                
+                                                // Get all animations and play them
+                                                model.animations.forEach((animation) => {
+                                                    let action = drone.mixer.clipAction(animation);
+                                                    action.play();
+                                                });
+                                                
+                                                // Store the last update time for the animation
+                                                drone.lastUpdate = Date.now();
                                             }
-
+                                            
                                             tb.add(drone);
                                             newDrones[name] = drone;
                                         });
@@ -148,11 +180,20 @@
                                     }
                                 }
 
-                                // Replace the current drones object with the updated one
+                                // Update the outer drones reference
                                 drones = newDrones;
                             });
                     }, 100);
                 }, render: function (gl, matrix) {
+                    // Update animations
+                    const now = Date.now();
+                    Object.values(drones).forEach(drone => {
+                        if (drone.mixer) {
+                            const delta = (now - (drone.lastUpdate || now)) / 1000;
+                            drone.mixer.update(delta);
+                            drone.lastUpdate = now;
+                        }
+                    });
                     tb.update();
                 }
             });
