@@ -19,13 +19,24 @@ from collections import OrderedDict
 
 # Imports for map component in index page
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Add this near the top of your file
 
 
 def read_map_html():
+    mapbox_token = os.getenv("MAPBOX_ACCESS_TOKEN")
+    if mapbox_token is None:
+        raise ValueError(
+            "MAPBOX_ACCESS_TOKEN not found in environment variables. Make sure your .env file exists and contains the token."
+        )
+
     with open(
         os.path.join(os.path.dirname(__file__), "components", "map_component.html"), "r"
     ) as f:
-        return f.read()
+        content = f.read()
+        content = content.replace("YOUR_MAPBOX_TOKEN_PLACEHOLDER", mapbox_token)
+        return content
 
 
 ##################
@@ -46,7 +57,7 @@ index_page = html.Div(
             id="title",
             children=[
                 html.Img(
-                    src="/assets/favicon.ico",
+                    src="/assets/favicon.png",
                     style={"height": "250px", "width": "250px"},
                 ),
                 html.H1("Swarm Squad", style={"marginTop": "-10px"}),

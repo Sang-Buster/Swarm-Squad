@@ -1,1 +1,3 @@
 __pycache__/
+.env
+src/data/swarm_squad.db
