@@ -17,120 +17,141 @@ class Boid:
 
 class Flock:
     def __init__(self, num_boids):
+        # Initialize in meters (100m x 100m x 45m space)
         self.boids = [
-            Boid(np.random.rand(3) * 50, np.random.rand(3)) for _ in range(num_boids)
+            Boid(np.random.rand(3) * np.array([100, 100, 45]), np.random.rand(3) - 0.5)
+            for _ in range(num_boids)
         ]
-        self.x_center = (29.187 + 29.191) / 2
-        self.y_center = (-81.048 + -81.052) / 2
-        self.z_center = (5 + 50) / 2
+        # Store reference coordinates for conversion
+        self.ref_lat = 29.189  # center latitude
+        self.ref_lon = -81.050  # center longitude
+        self.min_alt = 30
+        self.max_alt = 100
+
+    def meters_to_latlon(self, position):
+        # Convert meters to lat/lon/alt
+        # Approximate conversion (at equator, 1 degree = 111,111 meters)
+        lat_offset = position[1] / 111111
+        lon_offset = position[0] / (111111 * np.cos(np.radians(self.ref_lat)))
+
+        lat = self.ref_lat + lat_offset
+        lon = self.ref_lon + lon_offset
+        alt = self.min_alt + (position[2] / 45) * (self.max_alt - self.min_alt)
+
+        return np.array([lat, lon, alt])
 
     def update_boids(self, cohesion_weight, separation_weight, alignment_weight):
         colors = []
+
         for boid in self.boids:
+            # Calculate forces from each rule
             v1 = self.rule1(boid) * cohesion_weight
             v2 = self.rule2(boid) * separation_weight
             v3 = self.rule3(boid) * alignment_weight
-            boid.velocity += v1 + v2 + v3
-            boid.position += boid.velocity * 0.05
+            v4 = self.enforce_bounds(boid)
 
-            # Determine color based on behavior
-            if np.linalg.norm(v1) > np.linalg.norm(v2) and np.linalg.norm(
-                v1
-            ) > np.linalg.norm(v3):
+            # Calculate magnitudes of each behavior
+            cohesion_mag = np.linalg.norm(v1)
+            separation_mag = np.linalg.norm(v2)
+            alignment_mag = np.linalg.norm(v3)
+
+            # Determine dominant behavior
+            max_mag = max(cohesion_mag, separation_mag, alignment_mag)
+            if max_mag == cohesion_mag:
                 colors.append("#98C379")  # Green for cohesion
-            elif np.linalg.norm(v2) > np.linalg.norm(v1) and np.linalg.norm(
-                v2
-            ) > np.linalg.norm(v3):
+            elif max_mag == separation_mag:
                 colors.append("#E06C75")  # Red for separation
             else:
                 colors.append("#E5C07B")  # Yellow for alignment
 
-        # Extract positions into a separate array
-        positions = np.array([boid.position for boid in self.boids])
+            boid.velocity += v1 + v2 + v3 + v4
 
-        for boid in self.boids:
-            # Update min and max positions
-            min_positions = np.min(positions, axis=0)
-            max_positions = np.max(positions, axis=0)
+            # Limit velocity (in meters per second)
+            speed = np.linalg.norm(boid.velocity)
+            max_speed = 15.0
+            min_speed = 5.0
 
-            # Standardize and reposition positions
-            boid.position = (boid.position - min_positions) / (
-                max_positions - min_positions
-            )
+            if speed > max_speed:
+                boid.velocity = (boid.velocity / speed) * max_speed
+            elif speed < min_speed:
+                boid.velocity = (boid.velocity / speed) * min_speed
 
-            # Reposition within bounds
-            boid.position[0] = self.x_center + boid.position[0] * (29.191 - 29.187)
-            boid.position[1] = self.y_center + boid.position[1] * (-81.048 - -81.052)
-            boid.position[2] = self.z_center + boid.position[2] * (50 - 5)
+            boid.position += boid.velocity * 0.5
 
-        # Create a DataFrame with the boids' data
+        # Create database entries with converted coordinates
         data = {
             "Agent Name": range(1, len(self.boids) + 1),
             "Location": [
-                f"{boid.position[1]}, {boid.position[0]}, {boid.position[2]}"
-                for boid in self.boids
+                f"{pos[1]}, {pos[0]}, {pos[2]}"
+                for pos in [self.meters_to_latlon(boid.position) for boid in self.boids]
             ],
             "Destination": [
-                f"{boid.position[0]}, {boid.position[1] + random.uniform(0.0001, 0.001)}, 50"
-                for boid in self.boids
-            ],  # Placeholder for now
-            "Altitude": [boid.position[2] for boid in self.boids],
+                f"{pos[0]}, {pos[1] + random.uniform(0.0001, 0.001)}, 50"
+                for pos in [self.meters_to_latlon(boid.position) for boid in self.boids]
+            ],
+            "Altitude": [
+                self.meters_to_latlon(boid.position)[2] for boid in self.boids
+            ],
             "Pitch": [90 for _ in self.boids],
             "Yaw": [0 for _ in self.boids],
             "Roll": [0 for _ in self.boids],
-            "Airspeed/Velocity": [
-                np.linalg.norm(boid.velocity) for boid in self.boids
-            ],  # Placeholder for now
-            "Acceleration": [0 for _ in self.boids],  # Placeholder for now
-            "Angular Velocity": [0 for _ in self.boids],  # Placeholder for now
+            "Airspeed/Velocity": [np.linalg.norm(boid.velocity) for boid in self.boids],
+            "Acceleration": [0 for _ in self.boids],
+            "Angular Velocity": [0 for _ in self.boids],
         }
         telemetry_df = pd.DataFrame(data)
         telemetry_tbl_writer(telemetry_df)
 
         return colors
 
-    # Cohesion
     def rule1(self, boid):
+        # Cohesion - steer towards center of mass of neighbors
         neighbors = [
             other_boid
             for other_boid in self.boids
             if other_boid != boid
-            and np.linalg.norm(other_boid.position - boid.position) < 50
+            and np.linalg.norm(other_boid.position - boid.position) < 20
         ]
         if neighbors:
-            perceived_centre = np.mean(
-                [neighbor.position for neighbor in neighbors], axis=0
-            )
-            return (perceived_centre - boid.position) / 100
-        else:
-            return np.zeros(3)
+            center = np.mean([n.position for n in neighbors], axis=0)
+            return (center - boid.position) * 0.05  # Increased from 0.01 to 0.05
+        return np.zeros(3)
 
-    # Separation
     def rule2(self, boid):
-        c = np.zeros(3)
-        for other_boid in self.boids:
-            if (
-                other_boid != boid
-                and np.linalg.norm(other_boid.position - boid.position) < 3
-            ):
-                c -= other_boid.position - boid.position
-        return c
+        # Separation - avoid crowding neighbors
+        separation = np.zeros(3)
+        for other in self.boids:
+            if other != boid:
+                diff = boid.position - other.position
+                dist = np.linalg.norm(diff)
+                if dist < 10:  # 10m minimum separation
+                    separation += diff / (dist * dist)
+        return separation * 0.05  # Increased from 0.01 to 0.05
 
-    # Alignment
     def rule3(self, boid):
+        # Alignment - steer towards average heading of neighbors
         neighbors = [
             other_boid
             for other_boid in self.boids
             if other_boid != boid
-            and np.linalg.norm(other_boid.position - boid.position) < 30
+            and np.linalg.norm(other_boid.position - boid.position) < 15
         ]
         if neighbors:
-            perceived_velocity = np.mean(
-                [neighbor.velocity for neighbor in neighbors], axis=0
-            )
-            return (perceived_velocity - boid.velocity) / 8
-        else:
-            return np.zeros(3)
+            avg_vel = np.mean([n.velocity for n in neighbors], axis=0)
+            return (avg_vel - boid.velocity) * 0.25  # Increased from 0.125 to 0.25
+        return np.zeros(3)
+
+    def enforce_bounds(self, boid):
+        # Keep boids within a 100m x 100m x 45m space
+        bounds = np.array([[0, 100], [0, 100], [0, 45]])
+        force = np.zeros(3)
+
+        for i in range(3):
+            if boid.position[i] < bounds[i][0]:
+                force[i] = 2.0  # Increased from 1.0 to 2.0
+            elif boid.position[i] > bounds[i][1]:
+                force[i] = -2.0  # Increased from -1.0 to -2.0
+        return force * 0.5
 
 
 fig = plt.figure(figsize=(12, 8))
@@ -214,12 +235,16 @@ def animate(i):
         colors = flock.update_boids(
             cohesion_slider.val, separation_slider.val, alignment_slider.val
         )
+        positions = [flock.meters_to_latlon(boid.position) for boid in flock.boids]
         ax.scatter(
-            [boid.position[0] for boid in flock.boids],
-            [boid.position[1] for boid in flock.boids],
-            [boid.position[2] for boid in flock.boids],
+            [pos[1] for pos in positions],  # longitude
+            [pos[0] for pos in positions],  # latitude
+            [pos[2] for pos in positions],  # altitude
             c=colors,
         )
+        ax.set_xlim(-81.052, -81.048)
+        ax.set_ylim(29.187, 29.191)
+        ax.set_zlim(0, 150)
 
 
 def update(val):

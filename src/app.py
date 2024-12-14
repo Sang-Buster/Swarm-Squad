@@ -21,7 +21,7 @@ from collections import OrderedDict
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Add this near the top of your file
+load_dotenv()
 
 
 def read_map_html():
@@ -42,7 +42,14 @@ def read_map_html():
 ##################
 # Create the app #
 ##################
-app = Dash(__name__, update_title=None, title="Swarm Squad")
+app = Dash(
+    __name__,
+    update_title=None,
+    title="Swarm Squad",
+    external_stylesheets=[
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+    ],
+)
 server = app.server
 CORS(server)
 
@@ -91,12 +98,29 @@ index_page = html.Div(
             id="subpage-buttons",
             children=[
                 html.A(
-                    html.Button("Swarm Table", id="table_page-button"),
+                    html.Button(
+                        children=[
+                            html.I(
+                                className="fas fa-table", style={"marginRight": "8px"}
+                            ),
+                            "Swarm Table",
+                        ],
+                        id="table_page-button",
+                    ),
                     href="/table",
                     target="_blank",
                 ),
                 html.A(
-                    html.Button("Position Info", id="info_page-button"),
+                    html.Button(
+                        children=[
+                            html.I(
+                                className="fas fa-info-circle",
+                                style={"marginRight": "8px"},
+                            ),
+                            "Position Info",
+                        ],
+                        id="info_page-button",
+                    ),
                     href="/info",
                     target="_blank",
                 ),

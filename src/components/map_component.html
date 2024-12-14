@@ -74,7 +74,7 @@
             },
             trackUserLocation: true
         }));
-        
+
         // Add a drone to the map.
         map.on('style.load', function () {
             map.addSource('mapbox-dem', {
@@ -131,6 +131,8 @@
                                     if (drones[name]) {
                                         // Update existing drone
                                         drones[name].setCoords(coords);
+                                        // Update the tooltip content
+                                        drones[name].updateTooltip(`Drone ${name}<br>(${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}, ${coords[2].toFixed(1)})`);
                                         newDrones[name] = drones[name];
                                     } else {
                                         // Add new drone
@@ -153,24 +155,24 @@
                                         tb.loadObj(options, function (model) {
                                             let drone = model.setCoords(coords);
                                             drone.name = name;
-                                            
-                                            // Add a tooltip to the drone
-                                            drone.addTooltip('Drone ' + name, true);
-                                            
+
+                                            // Add a tooltip with both name and coordinates
+                                            drone.addTooltip(`Drone ${name}<br>(${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}, ${coords[2].toFixed(1)})`, true);
+
                                             // Initialize animation mixer
                                             if (model.animations && model.animations.length > 0) {
                                                 drone.mixer = new THREE.AnimationMixer(model);
-                                                
+
                                                 // Get all animations and play them
                                                 model.animations.forEach((animation) => {
                                                     let action = drone.mixer.clipAction(animation);
                                                     action.play();
                                                 });
-                                                
+
                                                 // Store the last update time for the animation
                                                 drone.lastUpdate = Date.now();
                                             }
-                                            
+
                                             tb.add(drone);
                                             newDrones[name] = drone;
                                         });
