@@ -7,8 +7,8 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet">
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
     <link rel="icon" href="../assets/favicon.png" type="image/x-icon">
     <style>
         body {
@@ -108,31 +108,26 @@
                         }
                     );
 
-                    let retryDelay = 100;
-                    const maxDelay = 5000; // Maximum delay of 5 seconds
-
-                    function fetchDroneData() {
+                    // Use setInterval instead of recursive setTimeout
+                    setInterval(function () {
                         fetch('http://localhost:8050/info')
                             .then(response => response.json())
                             .then(data => {
-                                // Reset delay on successful fetch
-                                retryDelay = 100;
                                 let newDrones = {};
-                                let newCoords = data.droneCoords; // Get the new coordinates from the server
-                                let droneNames = data.droneNames; // Get the drone names from the server
-                                let dronePitch = data.dronePitch; // Get the drone pitch from the server
-                                let droneYaw = data.droneYaw; // Get the drone yaw from the server
-                                let droneRoll = data.droneRoll; // Get the drone roll from the server
+                                let newCoords = data.droneCoords;
+                                let droneNames = data.droneNames;
+                                let dronePitch = data.dronePitch;
+                                let droneYaw = data.droneYaw;
+                                let droneRoll = data.droneRoll;
 
                                 for (let i = 0; i < newCoords.length; i++) {
                                     let name = droneNames[i];
-                                    let coords = newCoords[i][0].split(',').map(Number); // Split the string into an array of numbers
+                                    let coords = newCoords[i][0].split(',').map(Number);
 
                                     if (drones[name]) {
                                         // Update existing drone
                                         drones[name].setCoords(coords);
-                                        // Update the tooltip content
-                                        drones[name].updateTooltip(`Drone ${name}<br>(${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}, ${coords[2].toFixed(1)})`);
+                                        drones[name].setRotation({ x: dronePitch[i][0], y: droneYaw[i][0], z: droneRoll[i][0] });
                                         newDrones[name] = drones[name];
                                     } else {
                                         // Add new drone
@@ -141,35 +136,24 @@
                                             type: 'gltf',
                                             scale: 0.5,
                                             units: 'meters',
-                                            rotation: { x: dronePitch[i], y: droneYaw[i], z: droneRoll[i] },
-                                            animation: {
-                                                enabled: true,
-                                                animationData: {
-                                                    autostart: true,
-                                                    loop: true,
-                                                    duration: 1000
-                                                }
-                                            }
+                                            rotation: { x: dronePitch[i][0], y: droneYaw[i][0], z: droneRoll[i][0] }
                                         };
 
                                         tb.loadObj(options, function (model) {
                                             let drone = model.setCoords(coords);
                                             drone.name = name;
+                                            drone.addTooltip(`
+                                            Drone ${name}<br>
+                                            (${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}, ${coords[2].toFixed(1)})<br>
+                                            P:${dronePitch[i][0].toFixed(1)}° Y:${droneYaw[i][0].toFixed(1)}° R:${droneRoll[i][0].toFixed(1)}°
+                                            `, true);
 
-                                            // Add a tooltip with both name and coordinates
-                                            drone.addTooltip(`Drone ${name}<br>(${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}, ${coords[2].toFixed(1)})`, true);
-
-                                            // Initialize animation mixer
                                             if (model.animations && model.animations.length > 0) {
                                                 drone.mixer = new THREE.AnimationMixer(model);
-
-                                                // Get all animations and play them
                                                 model.animations.forEach((animation) => {
                                                     let action = drone.mixer.clipAction(animation);
                                                     action.play();
                                                 });
-
-                                                // Store the last update time for the animation
                                                 drone.lastUpdate = Date.now();
                                             }
 
@@ -188,19 +172,10 @@
 
                                 // Update the outer drones reference
                                 drones = newDrones;
-                            })
-                            .catch(error => {
-                                // Exponential backoff
-                                retryDelay = Math.min(retryDelay * 2, maxDelay);
-                            })
-                            .finally(() => {
-                                setTimeout(fetchDroneData, retryDelay);
                             });
-                    }
-
-                    // Start the polling
-                    fetchDroneData();
-                }, render: function (gl, matrix) {
+                    }, 100);
+                },
+                render: function (gl, matrix) {
                     // Update animations
                     const now = Date.now();
                     Object.values(drones).forEach(drone => {

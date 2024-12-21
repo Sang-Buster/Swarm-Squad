@@ -92,7 +92,7 @@ class Flock:
             "Altitude": [
                 self.meters_to_latlon(boid.position)[2] for boid in self.boids
             ],
-            "Pitch": [90 for _ in self.boids],
+            "Pitch": [45 for _ in self.boids],
             "Yaw": [0 for _ in self.boids],
             "Roll": [0 for _ in self.boids],
             "Airspeed/Velocity": [np.linalg.norm(boid.velocity) for boid in self.boids],
