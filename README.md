@@ -86,8 +86,6 @@
   <h2>👨‍💻 Development Setup</h2>
 </div>
 
-### Development Instructions 
-
 1. **Install pre-commit:**
    ```bash
    uv pip install pre-commit
