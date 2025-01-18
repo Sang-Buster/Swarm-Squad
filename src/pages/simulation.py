@@ -1,0 +1,29 @@
+import dash
+from dash import html
+import dash_mantine_components as dmc
+
+dash.register_page(
+    __name__,
+    path="/simulation",
+    order=1,
+    title="Swarm Squad | Simulation",
+    description="Interactive simulation environment for swarm intelligence",
+)
+
+layout = html.Div(
+    [
+        html.Div(className="illumination-1"),
+        html.Div(className="illumination-2"),
+        html.Div(className="illumination-3"),
+        html.Div(className="stars"),
+        dmc.Container(
+            [
+                dmc.Title("Simulation", style={"color": "white"}, size="h1"),
+                # Add your simulation content here
+            ],
+            fluid=True,
+            style={"height": "100vh", "position": "relative"},
+        ),
+    ],
+    style={"minHeight": "100vh", "position": "relative", "overflow": "hidden"},
+)

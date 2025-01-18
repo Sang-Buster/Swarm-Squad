@@ -1,0 +1,29 @@
+import dash
+from dash import html
+import dash_mantine_components as dmc
+
+dash.register_page(
+    __name__,
+    path="/info",
+    order=5,  # Last page
+    title="Swarm Squad | Info",
+    description="Information about Swarm Squad",
+)
+
+layout = html.Div(
+    [
+        html.Div(className="illumination-1"),
+        html.Div(className="illumination-2"),
+        html.Div(className="illumination-3"),
+        html.Div(className="stars"),
+        dmc.Container(
+            [
+                dmc.Title("Information", style={"color": "white"}, size="h1"),
+                # Add your info content here
+            ],
+            fluid=True,
+            style={"height": "100vh", "position": "relative"},
+        ),
+    ],
+    style={"minHeight": "100vh", "position": "relative", "overflow": "hidden"},
+)
