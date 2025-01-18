@@ -4,18 +4,16 @@ import sqlite3
 
 
 def read_mission_data():
-    # Create a connection to the SQLite database
-    conn = sqlite3.connect("./src/data/swarm_squad.db")
+    try:
+        conn = sqlite3.connect("./src/data/swarm_squad.db")
+        df = pd.read_sql_query("SELECT * from mission", conn)
+        conn.close()
+    except (sqlite3.OperationalError, pd.io.sql.DatabaseError):
+        df = pd.DataFrame(
+            columns=["Agent Name", "Status", "Mission", "Completion", "Duration"]
+        )
 
-    # Read the data from the database into a DataFrame
-    df = pd.read_sql_query("SELECT * from mission", conn)
-
-    # Close the connection to the database
-    conn.close()
-
-    # Create the columns for the DataTable
     columns = [{"name": i, "id": i} for i in df.columns]
-
     return df, columns
 
 

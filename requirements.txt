@@ -32,6 +32,9 @@ platformdirs==4.3.6
 plotly==5.24.1
 pre-commit==4.0.1
 pyparsing==3.2.0
+pyqt5==5.15.11
+pyqt5-qt5==5.15.16
+pyqt5-sip==12.16.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 pytz==2024.2

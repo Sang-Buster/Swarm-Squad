@@ -1,5 +1,15 @@
 import numpy as np
+import matplotlib
+
+try:
+    matplotlib.use("Qt5Agg")  # Try Qt5Agg first
+except ImportError:
+    try:
+        matplotlib.use("TkAgg")  # Try TkAgg second
+    except ImportError:
+        matplotlib.use("Agg")  # Fall back to Agg if others fail
 import matplotlib.pyplot as plt
+
 from matplotlib.animation import FuncAnimation
 from matplotlib.widgets import Slider, Button
 

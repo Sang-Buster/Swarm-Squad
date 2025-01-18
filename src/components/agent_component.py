@@ -4,14 +4,21 @@ import sqlite3
 
 
 def read_agent_data():
-    # Create a connection to the SQLite database
-    conn = sqlite3.connect("./src/data/swarm_squad.db")
+    try:
+        # Create a connection to the SQLite database
+        conn = sqlite3.connect("./src/data/swarm_squad.db")
 
-    # Read the data from the database into a DataFrame
-    df = pd.read_sql_query("SELECT * from agent", conn)
+        # Read the data from the database into a DataFrame
+        df = pd.read_sql_query("SELECT * from agent", conn)
 
-    # Close the connection to the database
-    conn.close()
+        # Close the connection to the database
+        conn.close()
+
+    except (sqlite3.OperationalError, pd.io.sql.DatabaseError):
+        # If table doesn't exist, create empty DataFrame with matching columns from fake data
+        df = pd.DataFrame(
+            columns=["Agent Name", "Agent Type", "Status", "Mode", "Alert Count"]
+        )
 
     # Create the columns for the DataTable
     columns = [{"name": i, "id": i} for i in df.columns]

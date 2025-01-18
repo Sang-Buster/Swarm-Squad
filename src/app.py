@@ -218,22 +218,35 @@ def refresh_map(n):
     ],
 )
 def update_agent_table(selected_agent, n):
-    agent_df, _ = agent_component.read_agent_data()
-    agent_df = agent_df.round(4)
-    if selected_agent:
-        filtered_agent_df = agent_df[agent_df["Agent Name"] == selected_agent]
-    else:
-        filtered_agent_df = agent_df
-    return filtered_agent_df.to_dict("records")
+    try:
+        agent_df, _ = agent_component.read_agent_data()
+        if agent_df.empty:
+            return []
+
+        agent_df = agent_df.round(4)
+        if selected_agent:
+            filtered_agent_df = agent_df[agent_df["Agent Name"] == selected_agent]
+        else:
+            filtered_agent_df = agent_df
+        return filtered_agent_df.to_dict("records")
+    except Exception as e:
+        print(f"Error in update_agent_table: {e}")
+        return []
 
 
 # Callback to update the dropdown menu
 @app.callback(Output("agent_dropdown", "options"), Input("agent_table", "data"))
-def update_dropdown_options(agent_table_data):
-    if agent_table_data is None:
+def update_agent_dropdown(agent_table_data):
+    try:
+        if not agent_table_data:
+            return []
+        df = pd.DataFrame(agent_table_data)
+        if df.empty:
+            return []
+        return [{"label": i, "value": i} for i in df["Agent Name"].unique()]
+    except Exception as e:
+        print(f"Error in update_agent_dropdown: {e}")
         return []
-    df = pd.DataFrame(agent_table_data)
-    return [{"label": i, "value": i} for i in df["Agent Name"].unique()]
 
 
 #################################
@@ -248,33 +261,46 @@ def update_dropdown_options(agent_table_data):
     ],
 )
 def update_telemetry_table(selected_agent, n):
-    telemetry_df, _ = telemetry_component.read_telemetry_data()
+    try:
+        telemetry_df, _ = telemetry_component.read_telemetry_data()
+        if telemetry_df.empty:
+            return []
 
-    def round_string_numbers(s):
-        if isinstance(s, str):
-            return ",".join([str(round(float(i), 4)) for i in s.split(",")])
+        def round_string_numbers(s):
+            if isinstance(s, str):
+                return ",".join([str(round(float(i), 4)) for i in s.split(",")])
+            else:
+                return s
+
+        for col in telemetry_df.columns:
+            telemetry_df[col] = telemetry_df[col].apply(round_string_numbers)
+        telemetry_df = telemetry_df.round(4)
+
+        if selected_agent:
+            filtered_telemetry_df = telemetry_df[
+                telemetry_df["Agent Name"] == selected_agent
+            ]
         else:
-            return s
-
-    for col in telemetry_df.columns:
-        telemetry_df[col] = telemetry_df[col].apply(round_string_numbers)
-    telemetry_df = telemetry_df.round(4)
-    if selected_agent:
-        filtered_telemetry_df = telemetry_df[
-            telemetry_df["Agent Name"] == selected_agent
-        ]
-    else:
-        filtered_telemetry_df = telemetry_df
-    return filtered_telemetry_df.to_dict("records")
+            filtered_telemetry_df = telemetry_df
+        return filtered_telemetry_df.to_dict("records")
+    except Exception as e:
+        print(f"Error in update_telemetry_table: {e}")
+        return []
 
 
 # Callback to update the dropdown menu
 @app.callback(Output("telemetry_dropdown", "options"), Input("telemetry_table", "data"))
 def update_telemetry_dropdown(telemetry_table_data):
-    if telemetry_table_data is None:
+    try:
+        if not telemetry_table_data:
+            return []
+        df = pd.DataFrame(telemetry_table_data)
+        if df.empty:
+            return []
+        return [{"label": i, "value": i} for i in df["Agent Name"].unique()]
+    except Exception as e:
+        print(f"Error in update_telemetry_dropdown: {e}")
         return []
-    df = pd.DataFrame(telemetry_table_data)
-    return [{"label": i, "value": i} for i in df["Agent Name"].unique()]
 
 
 ###############################
@@ -289,22 +315,35 @@ def update_telemetry_dropdown(telemetry_table_data):
     ],
 )
 def update_mission_table(selected_mission, n):
-    mission_df, _ = mission_component.read_mission_data()
-    mission_df = mission_df.round(4)
-    if selected_mission:
-        filtered_mission_df = mission_df[mission_df["Mission"] == selected_mission]
-    else:
-        filtered_mission_df = mission_df
-    return filtered_mission_df.to_dict("records")
+    try:
+        mission_df, _ = mission_component.read_mission_data()
+        if mission_df.empty:
+            return []
+
+        mission_df = mission_df.round(4)
+        if selected_mission:
+            filtered_mission_df = mission_df[mission_df["Mission"] == selected_mission]
+        else:
+            filtered_mission_df = mission_df
+        return filtered_mission_df.to_dict("records")
+    except Exception as e:
+        print(f"Error in update_mission_table: {e}")
+        return []
 
 
 # Callback to update the dropdown menu
 @app.callback(Output("mission_dropdown", "options"), Input("mission_table", "data"))
 def update_mission_dropdown(mission_table_data):
-    if mission_table_data is None:
+    try:
+        if not mission_table_data:
+            return []
+        df = pd.DataFrame(mission_table_data)
+        if df.empty:
+            return []
+        return [{"label": i, "value": i} for i in df["Mission"].unique()]
+    except Exception as e:
+        print(f"Error in update_mission_dropdown: {e}")
         return []
-    df = pd.DataFrame(mission_table_data)
-    return [{"label": i, "value": i} for i in df["Mission"].unique()]
 
 
 ##############################
@@ -319,22 +358,35 @@ def update_mission_dropdown(mission_table_data):
     ],
 )
 def update_system_table(selected_system, n):
-    system_df, _ = system_component.read_system_data()
-    system_df = system_df.round(4)
-    if selected_system:
-        filtered_system_df = system_df[system_df["Agent Name"] == selected_system]
-    else:
-        filtered_system_df = system_df
-    return filtered_system_df.to_dict("records")
+    try:
+        system_df, _ = system_component.read_system_data()
+        if system_df.empty:
+            return []
+
+        system_df = system_df.round(4)
+        if selected_system:
+            filtered_system_df = system_df[system_df["Agent Name"] == selected_system]
+        else:
+            filtered_system_df = system_df
+        return filtered_system_df.to_dict("records")
+    except Exception as e:
+        print(f"Error in update_system_table: {e}")
+        return []
 
 
 # Callback to update the dropdown menu
 @app.callback(Output("system_dropdown", "options"), Input("system_table", "data"))
 def update_system_dropdown(system_table_data):
-    if system_table_data is None:
+    try:
+        if not system_table_data:
+            return []
+        df = pd.DataFrame(system_table_data)
+        if df.empty:
+            return []
+        return [{"label": i, "value": i} for i in df["Agent Name"].unique()]
+    except Exception as e:
+        print(f"Error in update_system_dropdown: {e}")
         return []
-    df = pd.DataFrame(system_table_data)
-    return [{"label": i, "value": i} for i in df["Agent Name"].unique()]
 
 
 #################################
