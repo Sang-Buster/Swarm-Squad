@@ -66,7 +66,18 @@
    uv venv --python 3.12.1
    ```
 
-4. **Activate the virtual environment:**
+4. **Set up environment variables:**
+   ```bash
+   # Copy the example environment file
+   cp .env_example .env
+   ```
+   Then edit `.env` and add your own Mapbox access token:
+   ```
+   MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
+   ```
+   You can get a Mapbox access token by signing up at https://www.mapbox.com/
+
+5. **Activate the virtual environment:**
    ```bash
    # macOS/Linux
    source .venv/bin/activate
@@ -77,7 +88,7 @@
    .venv\Scripts\activate
    ```
 
-5. **Install the required packages:**
+6. **Install the required packages:**
    ```bash
    uv pip install -r requirements.txt
    ```
