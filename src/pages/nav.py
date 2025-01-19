@@ -6,7 +6,7 @@ from dash_iconify import DashIconify
 
 all_icons = [
     "mdi:home-outline",  # Home
-    "mdi:map-search-outline",  # Simulation
+    "mdi:map-search-outline",  # Map
     "mdi:database-outline",  # Data
     "mdi:chart-line",  # Plot
     "mdi:message-processing-outline",  # Chat

@@ -6,10 +6,10 @@ from dash import html
 
 dash.register_page(
     __name__,
-    path="/simulation",
+    path="/map",
     order=1,
-    title="Simulation | Swarm Squad",
-    description="Interactive simulation environment for swarm intelligence",
+    title="Map | Swarm Squad",
+    description="Interactive map for swarm intelligence",
 )
 
 

@@ -57,7 +57,7 @@ layout = html.Div(
                                                 "display": "inline-flex",
                                             },
                                         ),
-                                        href="/simulation",
+                                        href="/map",
                                         style={
                                             "text-decoration": "none",
                                             "width": "fit-content",
