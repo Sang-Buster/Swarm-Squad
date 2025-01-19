@@ -29,6 +29,7 @@ footer = dmc.Grid(
                                         )
                                     ],
                                     href=GITHUB,
+                                    target="_blank",
                                     className="footer-icon",
                                 ),
                                 dmc.Anchor(
@@ -39,6 +40,7 @@ footer = dmc.Grid(
                                         )
                                     ],
                                     href=WEB,
+                                    target="_blank",
                                     className="footer-icon",
                                 ),
                                 dmc.Anchor(
@@ -49,6 +51,7 @@ footer = dmc.Grid(
                                         )
                                     ],
                                     href=DOC,
+                                    target="_blank",
                                     className="footer-icon",
                                 ),
                             ],

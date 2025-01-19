@@ -79,6 +79,7 @@ def navbar():
                             )
                         ],
                         href="https://github.com/Sang-Buster",
+                        target="_blank",
                         style={
                             "color": "white",
                             "text-decoration": "none",
