@@ -20,21 +20,6 @@ layout = html.Div(
         html.Div(className="illumination-2"),
         html.Div(className="illumination-3"),
         html.Div(className="stars"),
-        # Favicon image
-        html.Img(
-            src="assets/favicon.png",
-            className="floating-favicon",
-            style={
-                "position": "absolute",
-                "right": "7%",
-                "top": "10%",
-                "width": "600px",
-                "height": "auto",
-                "animation": "float 1s ease-in-out infinite",
-                "filter": "opacity(0.55)",
-                "mix-blend-mode": "screen",
-            },
-        ),
         # Text content - adjusted position
         dmc.Container(
             [
