@@ -1,8 +1,9 @@
 import dash
-from dash import Dash, html, dcc
+from dash import Dash, dcc, html
+from flask_cors import CORS
+
 from pages.footer import footer
 from pages.nav import navbar
-from flask_cors import CORS
 from utils.websocket_manager import WebSocketManager
 
 app = Dash(

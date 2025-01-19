@@ -1,7 +1,7 @@
 import dash
-from dash import callback, Input, Output, State, ALL
-import dash_mantine_components as dmc
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
+from dash import ALL, Input, Output, State, callback
 from dash_iconify import DashIconify
 
 all_icons = [

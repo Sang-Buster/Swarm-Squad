@@ -1,6 +1,7 @@
-from dash import dcc, html, dash_table
-import pandas as pd
 import sqlite3
+
+import pandas as pd
+from dash import dash_table, dcc, html
 
 
 def read_mission_data():

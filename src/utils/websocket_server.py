@@ -1,12 +1,13 @@
 import asyncio
-import websockets
 import json
 import sqlite3
-import pandas as pd
 from datetime import datetime
-from websockets.exceptions import ConnectionClosedError
 from functools import lru_cache
 from time import time
+
+import pandas as pd
+import websockets
+from websockets.exceptions import ConnectionClosedError
 
 
 class DroneWebsocketServer:

@@ -1,6 +1,6 @@
 import dash
-from dash import html
 import dash_mantine_components as dmc
+from dash import html
 
 dash.register_page(
     __name__,
@@ -12,9 +12,8 @@ dash.register_page(
 
 layout = html.Div(
     [
-        html.Div(className="illumination-1"),
-        html.Div(className="illumination-2"),
-        html.Div(className="illumination-3"),
+        html.Div(className="illumination-4"),
+        html.Div(className="illumination-5"),
         html.Div(className="stars"),
         dmc.Container(
             [

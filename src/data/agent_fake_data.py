@@ -1,7 +1,8 @@
-import pandas as pd
-import sqlite3
 import random
+import sqlite3
 import time
+
+import pandas as pd
 
 # Define the columns for the Agent List table
 agent_columns = ["Agent Name", "Agent Type", "Status", "Mode", "Alert Count"]

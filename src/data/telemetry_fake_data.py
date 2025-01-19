@@ -1,7 +1,8 @@
-import pandas as pd
-import sqlite3
 import random
+import sqlite3
 import time
+
+import pandas as pd
 
 # Define the columns for the Telemetry Data table
 telemetry_columns = [

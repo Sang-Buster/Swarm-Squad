@@ -1,5 +1,11 @@
-import numpy as np
+import sys
+from pathlib import Path
+
+# Add the parent directory to the Python path
+sys.path.append(str(Path(__file__).parent.parent))
+
 import matplotlib
+import numpy as np
 
 try:
     matplotlib.use("Qt5Agg")  # Try Qt5Agg first
@@ -8,11 +14,14 @@ except ImportError:
         matplotlib.use("TkAgg")  # Try TkAgg second
     except ImportError:
         matplotlib.use("Agg")  # Fall back to Agg if others fail
-import matplotlib.pyplot as plt
 import time
+
+import matplotlib.pyplot as plt
 import pandas as pd
-from db_writer.db_writer_telemetry_tbl import telemetry_tbl_writer
 from matplotlib.widgets import Button
+
+from utils.db_writer import telemetry_tbl_writer
+from utils.websocket_writer import ws_writer
 
 
 class CoordinateConverter:
@@ -744,6 +753,7 @@ for iter in range(max_iter):
     # Create DataFrame and write to database
     telemetry_df = pd.DataFrame(data)
     telemetry_tbl_writer(telemetry_df)
+    ws_writer(data)
 
     # Check if figure is closed
     if not plt.fignum_exists(fig.number):

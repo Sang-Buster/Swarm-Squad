@@ -1,5 +1,11 @@
-import numpy as np
+import sys
+from pathlib import Path
+
+# Add the parent directory to the Python path
+sys.path.append(str(Path(__file__).parent.parent))
+
 import matplotlib
+import numpy as np
 
 try:
     matplotlib.use("Qt5Agg")  # Try Qt5Agg first
@@ -8,15 +14,17 @@ except ImportError:
         matplotlib.use("TkAgg")  # Try TkAgg second
     except ImportError:
         matplotlib.use("Agg")  # Fall back to Agg if others fail
+import random
+
 import matplotlib.pyplot as plt
 
-from matplotlib.animation import FuncAnimation
-from matplotlib.widgets import Slider, Button
-
-# Write the data to the SQLite database
+# Write the data to the SQLite database and websocket
 import pandas as pd
-import random
-from db_writer.db_writer_telemetry_tbl import telemetry_tbl_writer
+from matplotlib.animation import FuncAnimation
+from matplotlib.widgets import Button, Slider
+
+from utils.db_writer import telemetry_tbl_writer
+from utils.websocket_writer import ws_writer
 
 
 class Boid:
@@ -111,6 +119,7 @@ class Flock:
         }
         telemetry_df = pd.DataFrame(data)
         telemetry_tbl_writer(telemetry_df)
+        ws_writer(data)
 
         return colors
 

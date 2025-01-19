@@ -1,8 +1,9 @@
-import subprocess
 import atexit
-import psutil
+import subprocess
 import threading
 import time
+
+import psutil
 
 
 class WebSocketManager:
