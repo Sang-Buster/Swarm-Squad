@@ -5,8 +5,8 @@ import dash_mantine_components as dmc
 dash.register_page(
     __name__,
     path="/plot",
-    order=3,  # Fourth page
-    title="Swarm Squad | Plot",
+    order=4,  # Fourth page
+    title="Plot | Swarm Squad",
     description="Data visualization and plotting",
 )
 

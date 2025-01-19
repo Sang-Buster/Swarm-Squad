@@ -4,9 +4,9 @@ import dash_mantine_components as dmc
 
 dash.register_page(
     __name__,
-    path="/info",
+    path="/log",
     order=5,  # Last page
-    title="Swarm Squad | Info",
+    title="Log | Swarm Squad",
     description="Information about Swarm Squad",
 )
 

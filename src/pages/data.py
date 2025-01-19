@@ -6,7 +6,7 @@ dash.register_page(
     __name__,
     path="/data",
     order=2,  # Third page
-    title="Swarm Squad | Data",
+    title="Data | Swarm Squad",
     description="Data analysis and visualization",
 )
 

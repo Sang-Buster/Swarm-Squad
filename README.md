@@ -123,71 +123,20 @@
    ```bash
    python src/app.py
    ```
-
----
-
-<div align="center">
-  <h2>📅 Plan</h2>
-</div>
-
-   - Use Plotly Dash, SQLite, and Mapbox to improve the simulator. 
-   - Wrap into a local simulator not planning on deploying it to a web app as of now.
----
-
-<div align="center">
-  <h2>📊 Dashboard</h2>
-</div>
-
-**Agent List:**
-- Agent Name: (1, 2, 3, ...)
-- Agent ID: (UUID)
-- Agent Type: (quadcopter, fixed-wing, vehicle, robots)
-- Status: (Connected/Disconnected)
-- Mode: (Manual/Autonomous)
-- Location: (Genera location name)
-- Error/Alert Count: (1, 2, 3,...)
-- Log: (log_file_name.txt)
-
-**Telemetry Data:**	
-- Coordinates: (UTM/XYZ)
-- Destination Coordiantes: (desired_coord)
-- Altitude: (m)
-- Pressue: (psi/kPa)
-- Airspeed/Velocity: (kmh/mph)
-- Acce	leration: (m/s)
-- Angular Velovity: (rad/s)
-- Freq_IMU: (Hz)
-- Freq_GPS: (Hz)
-- Freq_Radio: (Hz)
-- Battery Voltage/Current:
-- Other sensor data: temperature, humidity, wind speed etc,.
-
-**Mission Details:**
-- Agent ID: (UUID)
-- Status: (In Progress/Completed/Pending)
-- Mission: (Task Name: Reaching to Destination/Avoiding/Stopped/Idling/Take-off/Land) 
-- Completion: (Percentage value for mission progress)
-- Duration: (in seconds)
-
-**System Health and Alert:**
-- Battery Level: (%)
-- GPS Accuracy: (%)
-- Connection Strength/Quality: (dB/dBm)
-- Communication Status: (Stable/Unstable/Lost)
-
 ---
 
 ## 📝 File Structure
 
 ```text
 📦Swarm Squad
- ┣ 📂src                         // Source Website
+ ┣ 📂src                         // Source Code
  ┃ ┣ 📂assets
  ┃ ┣ 📂components
  ┃ ┣ 📂data
- ┃ ┣ 📄app.py
- ┃ ┣ 📄setup.py
- ┃ ┗ 📄__init__.py
+ ┃ ┣ 📂pages
+ ┃ ┣ 📂scripts
+ ┃ ┣ 📂util
+ ┃ ┗ 📄app.py
  ┣ 📄.gitattributes
  ┣ 📄.gitignore
  ┗ 📄README.md

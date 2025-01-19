@@ -108,18 +108,32 @@
                         }
                     );
 
-                    // Use setInterval instead of recursive setTimeout
-                    setInterval(function () {
-                        fetch('http://localhost:8050/info')
-                            .then(response => response.json())
-                            .then(data => {
+                    const connectWebSocket = () => {
+                        const ws = new WebSocket('ws://localhost:8051');
+                        
+                        ws.onopen = () => {
+                            console.log('WebSocket connected');
+                        };
+                        
+                        ws.onclose = () => {
+                            console.log('WebSocket disconnected. Reconnecting...');
+                            setTimeout(connectWebSocket, 1000); // Reconnect after 1 second
+                        };
+                        
+                        ws.onerror = (error) => {
+                            console.error('WebSocket error:', error);
+                        };
+                        
+                        ws.onmessage = function(event) {
+                            try {
+                                const data = JSON.parse(event.data);
                                 let newDrones = {};
                                 let newCoords = data.droneCoords;
                                 let droneNames = data.droneNames;
                                 let dronePitch = data.dronePitch;
                                 let droneYaw = data.droneYaw;
                                 let droneRoll = data.droneRoll;
-
+                                
                                 for (let i = 0; i < newCoords.length; i++) {
                                     let name = droneNames[i];
                                     let coords = newCoords[i][0].split(',').map(Number);
@@ -172,8 +186,16 @@
 
                                 // Update the outer drones reference
                                 drones = newDrones;
-                            });
-                    }, 100);
+                            } catch (error) {
+                                console.error('Error processing message:', error);
+                            }
+                        };
+                        
+                        return ws;
+                    };
+
+                    // Initialize WebSocket connection
+                    let ws = connectWebSocket();
                 },
                 render: function (gl, matrix) {
                     // Update animations

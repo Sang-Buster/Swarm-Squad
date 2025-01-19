@@ -10,7 +10,7 @@ all_icons = [
     "mdi:database-outline",  # Data
     "mdi:chart-line",  # Plot
     "mdi:message-processing-outline",  # Chat
-    "mdi:information-outline",  # Info
+    "mdi:information-outline",  # Log
 ]
 
 

@@ -6,7 +6,7 @@ dash.register_page(
     __name__,
     path="/chat",
     order=4,  # Fifth page
-    title="Swarm Squad | Chat",
+    title="Chat | Swarm Squad",
     description="Interactive chat interface",
 )
 

@@ -2,7 +2,8 @@ import dash
 from dash import Dash, html, dcc
 from pages.footer import footer
 from pages.nav import navbar
-
+from flask_cors import CORS
+from utils.websocket_manager import WebSocketManager
 
 app = Dash(
     __name__,
@@ -23,7 +24,30 @@ app = Dash(
     ],
 )
 
+# Initialize WebSocket manager and attach it to the app
+app.ws_manager = WebSocketManager()
+
 server = app.server
+# Enable CORS for the Flask server
+CORS(
+    server,
+    resources={
+        r"/websocket/*": {
+            "origins": ["http://localhost:8050", "http://127.0.0.1:8050"],
+            "allow_headers": ["*"],
+            "expose_headers": ["*"],
+            "methods": ["GET", "POST", "OPTIONS"],
+            "supports_credentials": True,
+        }
+    },
+)
+
+
+@server.before_first_request
+def start_websocket():
+    app.ws_manager.start_websocket()
+
+
 app.layout = html.Div(
     [
         navbar(),
@@ -35,6 +59,8 @@ app.layout = html.Div(
     ]
 )
 
-
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    try:
+        app.run_server(debug=True)
+    finally:
+        app.ws_manager.cleanup_websocket()

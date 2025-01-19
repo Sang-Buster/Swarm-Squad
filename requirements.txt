@@ -34,6 +34,7 @@ pillow==11.0.0
 platformdirs==4.3.6
 plotly==5.24.1
 pre-commit==4.0.1
+psutil==6.1.1
 pyparsing==3.2.0
 pyqt5==5.15.11
 pyqt5-qt5==5.15.16
@@ -52,5 +53,6 @@ typing-extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 virtualenv==20.28.0
+websockets==14.1
 werkzeug==3.0.6
 zipp==3.21.0
