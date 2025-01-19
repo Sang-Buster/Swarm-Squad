@@ -110,21 +110,21 @@
 
                     const connectWebSocket = () => {
                         const ws = new WebSocket('ws://localhost:8051');
-                        
+
                         ws.onopen = () => {
                             console.log('WebSocket connected');
                         };
-                        
+
                         ws.onclose = () => {
                             console.log('WebSocket disconnected. Reconnecting...');
                             setTimeout(connectWebSocket, 1000); // Reconnect after 1 second
                         };
-                        
+
                         ws.onerror = (error) => {
                             console.error('WebSocket error:', error);
                         };
-                        
-                        ws.onmessage = function(event) {
+
+                        ws.onmessage = function (event) {
                             try {
                                 const data = JSON.parse(event.data);
                                 let newDrones = {};
@@ -133,7 +133,7 @@
                                 let dronePitch = data.dronePitch;
                                 let droneYaw = data.droneYaw;
                                 let droneRoll = data.droneRoll;
-                                
+
                                 for (let i = 0; i < newCoords.length; i++) {
                                     let name = droneNames[i];
                                     let coords = newCoords[i][0].split(',').map(Number);
@@ -156,8 +156,7 @@
                                         tb.loadObj(options, function (model) {
                                             let drone = model.setCoords(coords);
                                             drone.name = name;
-                                            drone.addTooltip(`
-                                            Drone ${name}<br>
+                                            drone.addTooltip(` ${name}<br>
                                             (${coords[0].toFixed(6)}, ${coords[1].toFixed(6)}, ${coords[2].toFixed(1)})<br>
                                             P:${dronePitch[i][0].toFixed(1)}° Y:${droneYaw[i][0].toFixed(1)}° R:${droneRoll[i][0].toFixed(1)}°
                                             `, true);
@@ -190,7 +189,7 @@
                                 console.error('Error processing message:', error);
                             }
                         };
-                        
+
                         return ws;
                     };
 

@@ -41,7 +41,7 @@
 ---
 
 <div align="center">
-  <h2>🛠️ Setup & Installation</h2>
+  <h2>🚀 Getting Started</h2>
 </div>
 
 1. **Clone the repository and navigate to project folder:**
@@ -66,18 +66,7 @@
    uv venv --python 3.12.1
    ```
 
-4. **Set up environment variables:**
-   ```bash
-   # Copy the example environment file
-   cp .env_example .env
-   ```
-   Then edit `.env` and add your own Mapbox access token:
-   ```
-   MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
-   ```
-   You can get a Mapbox access token by signing up at https://www.mapbox.com/
-
-5. **Activate the virtual environment:**
+4. **Activate the virtual environment:**
    ```bash
    # macOS/Linux
    source .venv/bin/activate
@@ -88,7 +77,7 @@
    .venv\Scripts\activate
    ```
 
-6. **Install the required packages:**
+5. **Install the required packages:**
    ```bash
    uv pip install -r requirements.txt
    ```
@@ -97,13 +86,26 @@
   <h2>👨‍💻 Development Setup</h2>
 </div>
 
-1. **Install pre-commit:**
+1. **Set up environment variables:**
+   ```bash
+   # Copy the example environment file
+   cp .env_example .env
+   ```
+   Then edit `.env` and add your configurations:
+   ```
+   MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
+   OLLAMA_API_URL=http://localhost:11434
+   ```
+   - You can get a Mapbox access token by signing up at https://www.mapbox.com/
+   - Update the OLLAMA_API_URL if your Ollama instance is running on a different address
+
+2. **Install pre-commit:**
    ```bash
    uv pip install pre-commit
    ```
    Pre-commit helps maintain code quality by running automated checks before commits are made.
 
-2. **Install git hooks:**
+3. **Install git hooks:**
    ```bash
    pre-commit install --hook-type commit-msg --hook-type pre-commit --hook-type pre-push
    ```
@@ -113,19 +115,22 @@
    - `pre-commit`: Runs Ruff linting and formatting checks before each commit
    - `pre-push`: Performs final validation before pushing to remote
   
-3. **Code Linting:**
+4. **Code Linting:**
    ```bash
    ruff check
    ruff format
    ```
 
-4. **Run the application:**
+5. **Run the application:**
    ```bash
    python src/app.py
    ```
+
 ---
 
-## 📝 File Structure
+<div align="center">
+  <h2>📝 File Structure</h2>
+</div>
 
 ```text
 📦Swarm Squad
