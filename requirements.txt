@@ -52,5 +52,5 @@ typing-extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 virtualenv==20.28.0
-werkzeug==2.2.3
+werkzeug==3.0.6
 zipp==3.21.0
