@@ -1,4 +1,5 @@
 import atexit
+import os
 import subprocess
 import threading
 import time
@@ -30,6 +31,7 @@ class WebSocketManager:
                 cmdline = proc.info["cmdline"]
                 if cmdline and "websocket_server.py" in " ".join(cmdline):
                     proc.kill()
+                    time.sleep(1)  # Give the process time to fully terminate
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 pass
 
@@ -44,19 +46,28 @@ class WebSocketManager:
     def start_websocket(self):
         """Start the WebSocket server"""
         if not self._is_running:
+            self.cleanup_old_websockets()  # Ensure no existing servers are running
+            time.sleep(1)  # Wait for port to be freed
+
             self._is_running = True
+            script_path = os.path.join(os.path.dirname(__file__), "websocket_server.py")
             self._websocket_process = subprocess.Popen(
-                ["python", "src/utils/websocket_server.py"],
+                ["python", script_path],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
+            time.sleep(2)  # Give the server time to start
             print("WebSocket server started")
 
             # Start health monitoring in a separate thread
-            self._health_check_thread = threading.Thread(
-                target=self._monitor_process_health, daemon=True
-            )
-            self._health_check_thread.start()
+            if (
+                not self._health_check_thread
+                or not self._health_check_thread.is_alive()
+            ):
+                self._health_check_thread = threading.Thread(
+                    target=self._monitor_process_health, daemon=True
+                )
+                self._health_check_thread.start()
 
     def cleanup_websocket(self):
         """Cleanup the WebSocket server"""

@@ -139,10 +139,28 @@
                                     let coords = newCoords[i][0].split(',').map(Number);
 
                                     if (drones[name]) {
-                                        // Update existing drone
-                                        drones[name].setCoords(coords);
-                                        drones[name].setRotation({ x: dronePitch[i][0], y: droneYaw[i][0], z: droneRoll[i][0] });
-                                        newDrones[name] = drones[name];
+                                        // Update existing drone with lerp
+                                        const drone = drones[name];
+                                        const currentPos = drone.coordinates;
+                                        
+                                        // Store target position and rotation
+                                        drone.targetCoords = coords;
+                                        drone.targetRotation = {
+                                            x: dronePitch[i][0],
+                                            y: droneYaw[i][0],
+                                            z: droneRoll[i][0]
+                                        };
+                                        
+                                        // Store current position and rotation for interpolation
+                                        if (!drone.currentRotation) {
+                                            drone.currentRotation = {
+                                                x: dronePitch[i][0],
+                                                y: droneYaw[i][0],
+                                                z: droneRoll[i][0]
+                                            };
+                                        }
+                                        
+                                        newDrones[name] = drone;
                                     } else {
                                         // Add new drone
                                         var options = {
@@ -204,6 +222,31 @@
                             const delta = (now - (drone.lastUpdate || now)) / 1000;
                             drone.mixer.update(delta);
                             drone.lastUpdate = now;
+                        }
+                        
+                        // Smooth position and rotation updates
+                        if (drone.targetCoords && drone.coordinates) {
+                            // Interpolation factor (adjust this value to control smoothing)
+                            const lerpFactor = 0.1;
+                            
+                            // Interpolate position
+                            const newCoords = [
+                                drone.coordinates[0] + (drone.targetCoords[0] - drone.coordinates[0]) * lerpFactor,
+                                drone.coordinates[1] + (drone.targetCoords[1] - drone.coordinates[1]) * lerpFactor,
+                                drone.coordinates[2] + (drone.targetCoords[2] - drone.coordinates[2]) * lerpFactor
+                            ];
+                            drone.setCoords(newCoords);
+                            
+                            // Interpolate rotation
+                            if (drone.targetRotation && drone.currentRotation) {
+                                const newRotation = {
+                                    x: drone.currentRotation.x + (drone.targetRotation.x - drone.currentRotation.x) * lerpFactor,
+                                    y: drone.currentRotation.y + (drone.targetRotation.y - drone.currentRotation.y) * lerpFactor,
+                                    z: drone.currentRotation.z + (drone.targetRotation.z - drone.currentRotation.z) * lerpFactor
+                                };
+                                drone.setRotation(newRotation);
+                                drone.currentRotation = newRotation;
+                            }
                         }
                     });
                     tb.update();
