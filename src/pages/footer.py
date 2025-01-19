@@ -17,7 +17,6 @@ footer = dmc.Grid(
                     style={
                         "backgroundColor": "rgba(0,0,0,0)",
                     },
-                    mb=5,
                     withBorder=False,
                     children=[
                         dmc.Group(
@@ -30,6 +29,7 @@ footer = dmc.Grid(
                                         )
                                     ],
                                     href=GITHUB,
+                                    className="footer-icon",
                                 ),
                                 dmc.Anchor(
                                     children=[
@@ -39,6 +39,7 @@ footer = dmc.Grid(
                                         )
                                     ],
                                     href=WEB,
+                                    className="footer-icon",
                                 ),
                                 dmc.Anchor(
                                     children=[
@@ -48,9 +49,11 @@ footer = dmc.Grid(
                                         )
                                     ],
                                     href=DOC,
+                                    className="footer-icon",
                                 ),
                             ],
                             position="center",
+                            className="footer-icons-group",
                         )
                     ],
                 )

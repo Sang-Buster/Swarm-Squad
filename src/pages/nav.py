@@ -27,33 +27,68 @@ def navbar():
             ),
             dmc.Modal(
                 [
+                    *[  # Use unpacking to combine regular nav links
+                        dbc.NavLink(
+                            children=[
+                                dmc.Group(
+                                    [
+                                        dmc.ActionIcon(
+                                            DashIconify(
+                                                icon=all_icons[idx],
+                                                width=35,
+                                                color="white",
+                                            ),
+                                            variant="transparent",
+                                        ),
+                                        page["name"],
+                                    ],
+                                    mt=20,
+                                )
+                            ],
+                            href=page["path"],
+                            style={
+                                "color": "white",
+                                "text-decoration": "none",
+                                "font-family": "Arial, sans-serif",
+                                "font-size": 15,
+                            },
+                            className="nav-link",
+                            id={"type": "dynamic-link", "index": idx},
+                        )
+                        for idx, page in enumerate(dash.page_registry.values())
+                        if page["module"] != "pages.not_found_404"
+                    ],
+                    # Add author link right after the navigation links
                     dbc.NavLink(
                         children=[
                             dmc.Group(
                                 [
-                                    dmc.ActionIcon(
-                                        DashIconify(
-                                            icon=all_icons[idx], width=35, color="white"
-                                        ),
-                                        variant="transparent",
+                                    dmc.Text(
+                                        "Created by ",
+                                        color="white",
+                                        size="sm",
+                                        style={
+                                            "font-family": "Arial, sans-serif",
+                                        },
                                     ),
-                                    page["name"],
+                                    "Sang-Buster",
                                 ],
                                 mt=20,
+                                position="left",  # Align items to the left
+                                spacing="xs",  # Control spacing between "Created by" and "Sang-Buster"
                             )
                         ],
-                        href=page["path"],
+                        href="https://github.com/Sang-Buster",
                         style={
                             "color": "white",
                             "text-decoration": "none",
                             "font-family": "Arial, sans-serif",
                             "font-size": 15,
+                            "margin-top": "13px",
                         },
                         className="nav-link",
-                        id={"type": "dynamic-link", "index": idx},
-                    )
-                    for idx, page in enumerate(dash.page_registry.values())
-                    if page["module"] != "pages.not_found_404"
+                        id={"type": "dynamic-link", "index": "author"},
+                    ),
                 ],
                 title="Choose your exploration..",
                 size="100%",

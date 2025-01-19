@@ -7,7 +7,7 @@
 /* Main modal container */
 .mantine-Modal-modal {
     position: fixed !important;
-    left: 0 !important;
+    left: 50px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     width: 300px !important;

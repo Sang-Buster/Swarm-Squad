@@ -74,7 +74,7 @@ layout = html.Div(
                     spacing="xl",
                     style={
                         "position": "absolute",
-                        "bottom": "35%",
+                        "bottom": "40%",
                         "left": "20%",
                         "maxWidth": "600px",
                     },
