@@ -42,3 +42,14 @@
     margin-top: 5px !important;
     padding: 0 !important;
 }
+
+/* Add hover effect for navigation links */
+.nav-link:hover {
+    color: rgb(28, 126, 214) !important;
+    transition: color 0.3s ease;
+}
+
+/* Make sure the hover effect applies to the text inside the link */
+.nav-link:hover .mantine-Group-root {
+    color: rgb(28, 126, 214);
+}

@@ -49,6 +49,7 @@ def navbar():
                             "font-family": "Arial, sans-serif",
                             "font-size": 15,
                         },
+                        className="nav-link",
                         id={"type": "dynamic-link", "index": idx},
                     )
                     for idx, page in enumerate(dash.page_registry.values())
