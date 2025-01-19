@@ -20,20 +20,19 @@ class WebSocketManager:
     def __init__(self):
         if not hasattr(self, "initialized"):
             self.initialized = True
-            self.cleanup_old_websockets()
             atexit.register(self.cleanup_websocket)
             self._health_check_thread = None
 
-    def cleanup_old_websockets(self):
-        """Clean up any existing websocket processes on port 8051"""
+    def is_websocket_running(self):
+        """Check if a websocket server is already running on port 8051"""
         for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
                 cmdline = proc.info["cmdline"]
                 if cmdline and "websocket_server.py" in " ".join(cmdline):
-                    proc.kill()
-                    time.sleep(1)  # Give the process time to fully terminate
+                    return True
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 pass
+        return False
 
     def _monitor_process_health(self):
         """Monitor WebSocket process health and restart if needed"""
@@ -44,11 +43,8 @@ class WebSocketManager:
             time.sleep(1)
 
     def start_websocket(self):
-        """Start the WebSocket server"""
-        if not self._is_running:
-            self.cleanup_old_websockets()  # Ensure no existing servers are running
-            time.sleep(1)  # Wait for port to be freed
-
+        """Start the WebSocket server only if one isn't already running"""
+        if not self.is_websocket_running():
             self._is_running = True
             script_path = os.path.join(os.path.dirname(__file__), "websocket_server.py")
             self._websocket_process = subprocess.Popen(
@@ -68,6 +64,9 @@ class WebSocketManager:
                     target=self._monitor_process_health, daemon=True
                 )
                 self._health_check_thread.start()
+        else:
+            print("WebSocket server already running")
+            self._is_running = True
 
     def cleanup_websocket(self):
         """Cleanup the WebSocket server"""

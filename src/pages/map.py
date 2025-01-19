@@ -1,8 +1,8 @@
-import os
-
 import dash
 import dash_mantine_components as dmc
 from dash import html
+
+from utils.map_fetcher import read_map_html
 
 dash.register_page(
     __name__,
@@ -12,21 +12,8 @@ dash.register_page(
     description="Interactive map for swarm intelligence",
 )
 
-
-def read_map_html():
-    mapbox_token = os.getenv("MAPBOX_ACCESS_TOKEN")
-    if mapbox_token is None:
-        raise ValueError(
-            "MAPBOX_ACCESS_TOKEN not found in environment variables. Make sure your .env file exists and contains the token."
-        )
-
-    map_path = os.path.join("src", "components", "map_component.html")
-
-    with open(map_path, "r") as f:
-        content = f.read()
-        content = content.replace("YOUR_MAPBOX_TOKEN_PLACEHOLDER", mapbox_token)
-        return content
-
+# Load map content once when the module is imported
+MAP_CONTENT = read_map_html()
 
 layout = html.Div(
     [
@@ -37,7 +24,7 @@ layout = html.Div(
                         dmc.Center(
                             dmc.Paper(
                                 html.Iframe(
-                                    srcDoc=read_map_html(),
+                                    srcDoc=MAP_CONTENT,  # Use pre-loaded content
                                     style={
                                         "width": "90vw",
                                         "height": "80vh",
@@ -57,9 +44,9 @@ layout = html.Div(
                             ),
                         ),
                     ],
-                    justify="center",  # Centers content vertically
-                    align="center",  # Centers content horizontally
-                    spacing="xl",  # Adds space between title and map
+                    justify="center",
+                    align="center",
+                    spacing="xl",
                 ),
             ],
             fluid=True,
