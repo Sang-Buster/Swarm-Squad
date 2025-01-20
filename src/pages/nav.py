@@ -8,8 +8,8 @@ all_icons = [
     "mdi:home-outline",  # Home
     "mdi:map-search-outline",  # Map
     "mdi:database-outline",  # Data
-    "mdi:chart-line",  # Plot
     "mdi:message-processing-outline",  # Chat
+    "mdi:chart-line",  # Plot
     "mdi:information-outline",  # Log
 ]
 
