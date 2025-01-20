@@ -135,14 +135,18 @@
 ```text
 📦Swarm Squad
  ┣ 📂src                         // Source Code
- ┃ ┣ 📂assets
- ┃ ┣ 📂components
- ┃ ┣ 📂data
- ┃ ┣ 📂pages
- ┃ ┣ 📂scripts
- ┃ ┣ 📂util
- ┃ ┗ 📄app.py
- ┣ 📄.gitattributes
- ┣ 📄.gitignore
- ┗ 📄README.md
+ ┃ ┣ 📂assets                       // Static assets (CSS, images, favicon, etc.)
+ ┃ ┣ 📂components                   // Reusable UI components
+ ┃ ┣ 📂data                         // Database files
+ ┃ ┣ 📂pages                        // Page components and routing
+ ┃ ┣ 📂scripts                      // Simulation and algorithm scripts
+ ┃ ┣ 📂util                         // Utility functions and helpers
+ ┃ ┗ 📄app.py                       // Main Dash application entry point
+ ┣ 📄.env_example                // Template for environment variables
+ ┣ 📄.gitignore                  // Git ignore patterns (env, cache, database)
+ ┣ 📄.pre-commit-config.yaml     // Pre-commit hooks (ruff, commit message)
+ ┣ 📄.pre-commit_msg_template.py // Commit message format validator
+ ┣ 📄LICENSE                     // MIT License
+ ┣ 📄README.md                   // Project documentation
+ ┗ 📄requirements.txt            // Python dependencies
 ```

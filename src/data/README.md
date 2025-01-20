@@ -1,6 +1,6 @@
 # Data Management Guide
 
-This guide explains how to interact with the SwarmSquad database and WebSocket system.
+This guide explains how to interact with the Swarm-Squad database and WebSocket system.
 
 ## Database Structure
 
