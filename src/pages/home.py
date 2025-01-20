@@ -50,7 +50,8 @@ layout = html.Div(
                                             size="lg",
                                             uppercase=True,
                                             rightIcon=DashIconify(
-                                                icon="ion:rocket-outline", width=30
+                                                icon="mdi:rocket-launch-outline",
+                                                width=30,
                                             ),
                                             style={
                                                 "width": "fit-content",
