@@ -47,13 +47,9 @@ class WebSocketManager:
         if not self.is_websocket_running():
             self._is_running = True
             script_path = os.path.join(os.path.dirname(__file__), "websocket_server.py")
-            self._websocket_process = subprocess.Popen(
-                ["python", script_path],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
+            self._websocket_process = subprocess.Popen(["python", script_path])
             time.sleep(2)  # Give the server time to start
-            print("\n[INFO] WebSocket server started")
+            print("[INFO] WebSocket server started")
 
             # Start health monitoring in a separate thread
             if (

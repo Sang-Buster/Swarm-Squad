@@ -57,17 +57,17 @@ class DroneWebsocketServer:
             await asyncio.sleep(0.1)  # 100ms update rate
 
     async def handle_client(self, websocket):
-        print("New client connected")
+        print("[CONNECTION] New client connected")
         self.connected_clients.add(websocket)
         try:
             await websocket.wait_closed()
         except ConnectionClosedError:
-            print("Client connection closed unexpectedly")
+            print("[ERROR] Client connection closed unexpectedly")
         except Exception as e:
-            print(f"Error handling client: {e}")
+            print(f"[ERROR] Error handling client: {e}")
         finally:
             self.connected_clients.remove(websocket)
-            print("Client disconnected")
+            print("[CONNECTION] Client disconnected")
 
     async def start_server(self):
         async with websockets.serve(
@@ -78,16 +78,18 @@ class DroneWebsocketServer:
             ping_timeout=20,
             compression=None,
         ):
-            print(f"WebSocket server running at ws://{self.host}:{self.port}")
+            print(
+                f"\n\n[INFO] WebSocket server running at ws://{self.host}:{self.port}"
+            )
             await self.broadcast_drone_data()
 
     def run(self):
         try:
             asyncio.run(self.start_server())
         except KeyboardInterrupt:
-            print("\nServer stopped by user")
+            print("\n[INFO] Server stopped by user")
         except Exception as e:
-            print(f"Server error: {e}")
+            print(f"[ERROR] Server error: {e}")
 
 
 if __name__ == "__main__":
