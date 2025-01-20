@@ -40,7 +40,8 @@
 .table-container {
     flex: 1;
     overflow: auto;
-    height: calc(100% - 80px);  /* Account for header and column select */
+    height: calc(100% - 80px);
+    /* Account for header and column select */
 }
 
 /* DataTable specific styles */

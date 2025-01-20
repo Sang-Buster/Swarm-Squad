@@ -142,7 +142,7 @@
                                         // Update existing drone with lerp
                                         const drone = drones[name];
                                         const currentPos = drone.coordinates;
-                                        
+
                                         // Store target position and rotation
                                         drone.targetCoords = coords;
                                         drone.targetRotation = {
@@ -150,7 +150,7 @@
                                             y: droneYaw[i][0],
                                             z: droneRoll[i][0]
                                         };
-                                        
+
                                         // Store current position and rotation for interpolation
                                         if (!drone.currentRotation) {
                                             drone.currentRotation = {
@@ -159,7 +159,7 @@
                                                 z: droneRoll[i][0]
                                             };
                                         }
-                                        
+
                                         newDrones[name] = drone;
                                     } else {
                                         // Add new drone
@@ -223,12 +223,12 @@
                             drone.mixer.update(delta);
                             drone.lastUpdate = now;
                         }
-                        
+
                         // Smooth position and rotation updates
                         if (drone.targetCoords && drone.coordinates) {
                             // Interpolation factor (adjust this value to control smoothing)
                             const lerpFactor = 0.1;
-                            
+
                             // Interpolate position
                             const newCoords = [
                                 drone.coordinates[0] + (drone.targetCoords[0] - drone.coordinates[0]) * lerpFactor,
@@ -236,7 +236,7 @@
                                 drone.coordinates[2] + (drone.targetCoords[2] - drone.coordinates[2]) * lerpFactor
                             ];
                             drone.setCoords(newCoords);
-                            
+
                             // Interpolate rotation
                             if (drone.targetRotation && drone.currentRotation) {
                                 const newRotation = {
