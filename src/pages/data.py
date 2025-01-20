@@ -72,7 +72,7 @@ layout = html.Div(
                                 dmc.Title(
                                     [
                                         DashIconify(
-                                            icon="mdi:face-agent",
+                                            icon="carbon:events",
                                             width=24,
                                             className="table-icon",
                                         ),
@@ -112,7 +112,7 @@ layout = html.Div(
                                 dmc.Title(
                                     [
                                         DashIconify(
-                                            icon="mdi:target",
+                                            icon="carbon:center-circle",
                                             width=24,
                                             className="table-icon",
                                         ),
@@ -152,7 +152,7 @@ layout = html.Div(
                                 dmc.Title(
                                     [
                                         DashIconify(
-                                            icon="mdi:signal",
+                                            icon="carbon:network-4",
                                             width=24,
                                             className="table-icon",
                                         ),
@@ -192,7 +192,7 @@ layout = html.Div(
                                 dmc.Title(
                                     [
                                         DashIconify(
-                                            icon="mdi:battery-charging-medium",
+                                            icon="carbon:activity",
                                             width=24,
                                             className="table-icon",
                                         ),

@@ -38,7 +38,7 @@ class WebSocketManager:
         """Monitor WebSocket process health and restart if needed"""
         while self._is_running:
             if self._websocket_process and self._websocket_process.poll() is not None:
-                print("WebSocket server died, restarting...")
+                print("[INFO] WebSocket server died, restarting...")
                 self.start_websocket()
             time.sleep(1)
 
@@ -53,7 +53,7 @@ class WebSocketManager:
                 stderr=subprocess.PIPE,
             )
             time.sleep(2)  # Give the server time to start
-            print("WebSocket server started")
+            print("\n[INFO] WebSocket server started")
 
             # Start health monitoring in a separate thread
             if (
@@ -65,18 +65,18 @@ class WebSocketManager:
                 )
                 self._health_check_thread.start()
         else:
-            print("WebSocket server already running")
+            print("[INFO] WebSocket server already running")
             self._is_running = True
 
     def cleanup_websocket(self):
         """Cleanup the WebSocket server"""
         self._is_running = False
         if self._websocket_process:
-            print("Shutting down WebSocket server...")
+            print("[INFO] Shutting down WebSocket server...")
             self._websocket_process.terminate()
             try:
                 self._websocket_process.wait(timeout=5)
             except subprocess.TimeoutExpired:
                 self._websocket_process.kill()
             self._websocket_process = None
-            print("WebSocket server stopped")
+            print("[INFO] WebSocket server stopped")
