@@ -108,20 +108,41 @@
                         }
                     );
 
+                    // Add connection status indicator
+                    const connectionStatus = document.createElement('div');
+                    connectionStatus.style.position = 'absolute';
+                    connectionStatus.style.top = '10px';
+                    connectionStatus.style.left = '10px';
+                    connectionStatus.style.padding = '5px';
+                    connectionStatus.style.borderRadius = '5px';
+                    connectionStatus.style.backgroundColor = '#ff4444';
+                    connectionStatus.style.color = 'white';
+                    connectionStatus.style.fontFamily = 'Arial, sans-serif';
+                    connectionStatus.style.fontSize = '14px';
+                    connectionStatus.style.zIndex = '1000';
+                    connectionStatus.textContent = 'WebSocket: Disconnected';
+                    document.body.appendChild(connectionStatus);
+
                     const connectWebSocket = () => {
                         const ws = new WebSocket('ws://localhost:8051');
 
                         ws.onopen = () => {
                             console.log('WebSocket connected');
+                            connectionStatus.textContent = 'WebSocket: Connected';
+                            connectionStatus.style.backgroundColor = '#44ff44';
                         };
 
                         ws.onclose = () => {
                             console.log('WebSocket disconnected. Reconnecting...');
+                            connectionStatus.textContent = 'WebSocket: Disconnected';
+                            connectionStatus.style.backgroundColor = '#ff4444';
                             setTimeout(connectWebSocket, 1000); // Reconnect after 1 second
                         };
 
                         ws.onerror = (error) => {
                             console.error('WebSocket error:', error);
+                            connectionStatus.textContent = 'WebSocket: Error';
+                            connectionStatus.style.backgroundColor = '#ff4444';
                         };
 
                         ws.onmessage = function (event) {
