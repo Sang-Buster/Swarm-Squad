@@ -34,8 +34,6 @@ while True:
     # Close the connection to the database
     conn.close()
 
-    print("Updated the database")
-
     # counter += 1
 
     # Pause for half second before the next update

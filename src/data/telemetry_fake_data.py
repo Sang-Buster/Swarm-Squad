@@ -81,7 +81,5 @@ while True:
     # Close the connection to the database
     conn.close()
 
-    print("Updated the database")
-
     # Pause for half second before the next update
     time.sleep(0.5)

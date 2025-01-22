@@ -115,7 +115,7 @@
                     connectionStatus.style.left = '10px';
                     connectionStatus.style.padding = '5px';
                     connectionStatus.style.borderRadius = '5px';
-                    connectionStatus.style.backgroundColor = '#ff4444';
+                    connectionStatus.style.backgroundColor = '#e06c75';
                     connectionStatus.style.color = 'white';
                     connectionStatus.style.fontFamily = 'Arial, sans-serif';
                     connectionStatus.style.fontSize = '14px';
@@ -129,20 +129,20 @@
                         ws.onopen = () => {
                             console.log('WebSocket connected');
                             connectionStatus.textContent = 'WebSocket: Connected';
-                            connectionStatus.style.backgroundColor = '#44ff44';
+                            connectionStatus.style.backgroundColor = '#98c379';
                         };
 
                         ws.onclose = () => {
                             console.log('WebSocket disconnected. Reconnecting...');
                             connectionStatus.textContent = 'WebSocket: Disconnected';
-                            connectionStatus.style.backgroundColor = '#ff4444';
+                            connectionStatus.style.backgroundColor = '#e06c75';
                             setTimeout(connectWebSocket, 1000); // Reconnect after 1 second
                         };
 
                         ws.onerror = (error) => {
                             console.error('WebSocket error:', error);
                             connectionStatus.textContent = 'WebSocket: Error';
-                            connectionStatus.style.backgroundColor = '#ff4444';
+                            connectionStatus.style.backgroundColor = '#e06c75';
                         };
 
                         ws.onmessage = function (event) {
