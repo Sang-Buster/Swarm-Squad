@@ -127,26 +127,27 @@
                         const ws = new WebSocket('ws://localhost:8051');
 
                         ws.onopen = () => {
-                            console.log('WebSocket connected');
+                            console.log('[INFO] WebSocket connected');
                             connectionStatus.textContent = 'WebSocket: Connected';
                             connectionStatus.style.backgroundColor = '#98c379';
                         };
 
                         ws.onclose = () => {
-                            console.log('WebSocket disconnected. Reconnecting...');
+                            console.log('[INFO] WebSocket disconnected. Reconnecting...');
                             connectionStatus.textContent = 'WebSocket: Disconnected';
                             connectionStatus.style.backgroundColor = '#e06c75';
                             setTimeout(connectWebSocket, 1000); // Reconnect after 1 second
                         };
 
                         ws.onerror = (error) => {
-                            console.error('WebSocket error:', error);
+                            console.error('[ERROR] WebSocket error:', error);
                             connectionStatus.textContent = 'WebSocket: Error';
                             connectionStatus.style.backgroundColor = '#e06c75';
                         };
 
                         ws.onmessage = function (event) {
                             try {
+                                console.log('[DEBUG] Received WebSocket message:', event.data.slice(0, 200) + '...');
                                 const data = JSON.parse(event.data);
                                 let newDrones = {};
                                 let newCoords = data.droneCoords;
@@ -155,9 +156,16 @@
                                 let droneYaw = data.droneYaw;
                                 let droneRoll = data.droneRoll;
 
+                                console.log('[DEBUG] Processing drones:', {
+                                    droneCount: newCoords.length,
+                                    firstDroneCoords: newCoords[0],
+                                    firstDroneName: droneNames[0]
+                                });
+
                                 for (let i = 0; i < newCoords.length; i++) {
                                     let name = droneNames[i];
                                     let coords = newCoords[i][0].split(',').map(Number);
+                                    console.log(`[DEBUG] Processing drone ${name}:`, coords);
 
                                     if (drones[name]) {
                                         // Update existing drone with lerp
