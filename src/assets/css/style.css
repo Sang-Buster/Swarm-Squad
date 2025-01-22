@@ -6,6 +6,15 @@ body {
     overflow-x: hidden;
 }
 
+/* Background canvas */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    /* Ensure it stays in the background */
+}
+
 /* Multiple illumination layers */
 .illumination-1,
 .illumination-2,
@@ -194,7 +203,7 @@ body {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background: radial-gradient(circle at 50% 50%, rgba(184, 184, 184, 0.03) 1px, transparent 1px);
     background-size: 50px 50px;
     z-index: 0;
 }

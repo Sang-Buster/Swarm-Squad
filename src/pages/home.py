@@ -84,6 +84,9 @@ layout = html.Div(
             fluid=True,
             style={"height": "100vh", "position": "relative"},
         ),
+        # Add the boids.js script here
+        html.Script(src="/assets/js/p5.js"),
+        html.Script(src="/assets/js/boids.js"),
     ],
     style={
         "minHeight": "100vh",
