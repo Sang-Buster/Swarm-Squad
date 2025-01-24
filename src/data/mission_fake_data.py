@@ -47,6 +47,9 @@ while True:
     # Write the data to a table in the database
     mission_df.to_sql("mission", conn, if_exists="replace", index=False)
 
+    # Print confirmation message
+    print("Mission table updated in the database.")
+
     # Close the connection to the database
     conn.close()
 

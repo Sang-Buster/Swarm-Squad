@@ -65,6 +65,11 @@ def fetch_agent_data():
         query = "SELECT * FROM agent"
         df = pd.read_sql_query(query, conn)
         conn.close()
+
+        if df.empty:
+            print("Agent table is empty.")
+            return pd.DataFrame()  # Return an empty DataFrame
+
         return df
     except Exception as e:
         print(f"Error fetching agent data: {e}")
@@ -78,6 +83,11 @@ def fetch_mission_data():
         query = "SELECT * FROM mission"
         df = pd.read_sql_query(query, conn)
         conn.close()
+
+        if df.empty:
+            print("Mission table is empty.")
+            return pd.DataFrame()  # Return an empty DataFrame
+
         return df
     except Exception as e:
         print(f"Error fetching mission data: {e}")
@@ -91,6 +101,11 @@ def fetch_telemetry_data():
         query = "SELECT * FROM telemetry"
         df = pd.read_sql_query(query, conn)
         conn.close()
+
+        if df.empty:
+            print("Telemetry table is empty.")
+            return pd.DataFrame()  # Return an empty DataFrame
+
         return df
     except Exception as e:
         print(f"Error fetching telemetry data: {e}")
@@ -104,6 +119,11 @@ def fetch_system_data():
         query = "SELECT * FROM system"
         df = pd.read_sql_query(query, conn)
         conn.close()
+
+        if df.empty:
+            print("System table is empty.")
+            return pd.DataFrame()  # Return an empty DataFrame
+
         return df
     except Exception as e:
         print(f"Error fetching system data: {e}")

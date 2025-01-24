@@ -78,6 +78,9 @@ while True:
     # Write the data to a table in the database
     telemetry_df.to_sql("telemetry", conn, if_exists="replace", index=False)
 
+    # Print confirmation message
+    print("Telemetry table updated in the database.")
+
     # Close the connection to the database
     conn.close()
 

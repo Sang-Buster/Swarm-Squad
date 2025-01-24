@@ -31,6 +31,9 @@ while True:
     # Write the data to a table in the database
     agent_df.to_sql("agent", conn, if_exists="replace", index=False)
 
+    # Print confirmation message
+    print("Agent table updated in the database.")
+
     # Close the connection to the database
     conn.close()
 
