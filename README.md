@@ -61,7 +61,7 @@
    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
 
-3. **Create a virtual environment at `/weather-dashboard/.venv/`:**
+3. **Create a virtual environment at `Swarm-Squad/.venv/`:**
    ```bash
    uv venv --python 3.12.1
    ```
